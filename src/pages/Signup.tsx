@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 import { UserPlus, Mail, Lock, User } from 'lucide-react';
 
 export default function Signup() {
@@ -31,9 +32,27 @@ export default function Signup() {
 
     try {
       await signUp(email, password, displayName);
-      navigate('/login?message=check-email');
+      
+      // Check if email confirmation is required
+      const { data } = await supabase.auth.getSession();
+      if (data.session) {
+        // User is already signed in (email confirmation not required)
+        navigate('/');
+      } else {
+        // Email confirmation required
+        navigate('/login?message=check-email');
+      }
     } catch (err: any) {
-      setError(err.message || 'Failed to create account');
+      console.error('Signup error:', err);
+      
+      // Provide helpful error messages
+      if (err.message?.includes('already registered')) {
+        setError('An account with this email already exists. Please sign in instead.');
+      } else if (err.message?.includes('password')) {
+        setError('Password is too weak. Please use at least 6 characters.');
+      } else {
+        setError(err.message || 'Failed to create account. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

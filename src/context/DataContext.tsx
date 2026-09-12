@@ -4,6 +4,7 @@ import { seedFacilities, seedReviews } from '../data/seedData';
 import { haversineDistance } from '../utils/distance';
 import { supabase } from '../lib/supabase';
 import { filterReviews } from '../utils/contentFilter';
+import { useAuth } from './AuthContext';
 
 interface DataContextType {
   facilities: Facility[];
@@ -40,6 +41,7 @@ const DataContext = createContext<DataContextType>({
 });
 
 export function DataProvider({ children }: { children: ReactNode }) {
+  const { user, isAuthenticated } = useAuth();
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
@@ -207,8 +209,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setFacilities(updated);
     localStorage.setItem('uoftflow_facilities', JSON.stringify(updated));
 
-    // Try to save to Supabase if connected
-    if (supabaseConnected) {
+    // Always try to save to Supabase if user is authenticated
+    if (isAuthenticated) {
       try {
         console.log('💾 Saving facility to Supabase...');
         const { error } = await supabase.from('facilities').insert({
@@ -229,14 +231,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
         
         if (error) {
           console.error('❌ Failed to save facility to Supabase:', error.message);
+          console.error('Error details:', error);
+          // Show user-friendly error
+          if (error.message.includes('duplicate key') || error.code === '23505') {
+            alert('This facility already exists. Please refresh the page.');
+          } else if (error.message.includes('violates row-level security') || error.code === '42501') {
+            alert('Permission denied. Please sign in again and try.');
+          } else {
+            alert(`Failed to save facility: ${error.message}`);
+          }
         } else {
           console.log('✅ Facility saved to Supabase successfully');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('❌ Error saving facility to Supabase:', error);
+        alert(`Error saving facility: ${error.message || 'Unknown error'}`);
       }
     } else {
-      console.log('⚠️ Supabase not connected, facility saved to localStorage only');
+      console.log('⚠️ User not authenticated, facility saved to localStorage only');
     }
   };
 
@@ -246,8 +258,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setReviews(updated);
     localStorage.setItem('uoftflow_reviews', JSON.stringify(updated));
 
-    // Try to save to Supabase if connected
-    if (supabaseConnected) {
+    // Always try to save to Supabase if user is authenticated
+    if (isAuthenticated) {
       try {
         console.log('💾 Saving review to Supabase...');
         const { error } = await supabase.from('reviews').insert({
@@ -264,14 +276,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
         
         if (error) {
           console.error('❌ Failed to save review to Supabase:', error.message);
+          console.error('Error details:', error);
+          // Show user-friendly error
+          if (error.message.includes('duplicate key') || error.code === '23505') {
+            alert('This review already exists. Please refresh the page.');
+          } else if (error.message.includes('violates row-level security') || error.code === '42501') {
+            alert('Permission denied. Please sign in again and try.');
+          } else {
+            alert(`Failed to save review: ${error.message}`);
+          }
         } else {
           console.log('✅ Review saved to Supabase successfully');
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('❌ Error saving review to Supabase:', error);
+        alert(`Error saving review: ${error.message || 'Unknown error'}`);
       }
     } else {
-      console.log('⚠️ Supabase not connected, review saved to localStorage only');
+      console.log('⚠️ User not authenticated, review saved to localStorage only');
     }
   };
 
@@ -292,20 +314,33 @@ export function DataProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('uoftflow_reviews', JSON.stringify(updatedReviews));
     }
 
-    // Try to save to Supabase
-    try {
-      await supabase.from('reports').insert({
-        id: report.id,
-        review_id: report.reviewId,
-        reporter_id: report.reporterId,
-        reporter_name: report.reporterName,
-        reason: report.reason,
-        description: report.description,
-        status: report.status,
-        created_at: report.createdAt,
-      });
-    } catch (error) {
-      console.warn('Failed to save report to Supabase:', error);
+    // Try to save to Supabase if user is authenticated
+    if (isAuthenticated) {
+      try {
+        console.log('💾 Saving report to Supabase...');
+        const { error } = await supabase.from('reports').insert({
+          id: report.id,
+          review_id: report.reviewId,
+          reporter_id: report.reporterId,
+          reporter_name: report.reporterName,
+          reason: report.reason,
+          description: report.description,
+          status: report.status,
+          created_at: report.createdAt,
+        });
+        
+        if (error) {
+          console.error('❌ Failed to save report to Supabase:', error.message);
+          alert(`Failed to save report: ${error.message}`);
+        } else {
+          console.log('✅ Report saved to Supabase successfully');
+        }
+      } catch (error: any) {
+        console.error('❌ Error saving report to Supabase:', error);
+        alert(`Error saving report: ${error.message || 'Unknown error'}`);
+      }
+    } else {
+      console.log('⚠️ User not authenticated, report saved to localStorage only');
     }
   };
 
