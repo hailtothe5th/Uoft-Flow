@@ -17,14 +17,14 @@ import {
 export default function FacilityPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { facilitiesWithStats, reviews, userLocation, getVisibleReviews } = useData();
+  const { facilitiesWithStats, getVisibleReviews } = useData();
 
   const facility = facilitiesWithStats.find((f) => f.id === id);
-  
+
   const facilityReviews = useMemo(() => {
     if (!id || !getVisibleReviews) return [];
     try {
-      return getVisibleReviews(id).sort((a, b) => 
+      return getVisibleReviews(id).sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
     } catch (err) {
@@ -65,11 +65,16 @@ export default function FacilityPage() {
 
   const conditionEmoji = (condition: string) => {
     switch (condition) {
-      case 'Excellent': return '✨';
-      case 'Good': return '👍';
-      case 'Needs attention': return '⚠️';
-      case 'Out of order': return '🚫';
-      default: return '❓';
+      case 'Excellent':
+        return '✨';
+      case 'Good':
+        return '👍';
+      case 'Needs attention':
+        return '⚠️';
+      case 'Out of order':
+        return '🚫';
+      default:
+        return '❓';
     }
   };
 
@@ -89,10 +94,14 @@ export default function FacilityPage() {
         <div className="flex items-start gap-3 sm:gap-4">
           <span className="text-4xl sm:text-5xl">{facility.type === 'toilet' ? '🚻' : '🚰'}</span>
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg sm:text-xl md:text-2xl font-black text-uoft-blue dark:text-white mb-1 break-words">{facility.name}</h1>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-black text-uoft-blue dark:text-white mb-1 break-words">
+              {facility.name}
+            </h1>
             <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 flex items-center gap-1 flex-wrap">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="break-words">{facility.building} • {facility.floorNote}</span>
+              <span className="break-words">
+                {facility.building} • {facility.floorNote}
+              </span>
             </p>
 
             {/* Tags */}
@@ -127,7 +136,9 @@ export default function FacilityPage() {
         {/* Stats */}
         <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
           <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Overall Rating</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">
+              Overall Rating
+            </p>
             {facility.avgRating > 0 ? (
               <RatingDisplay rating={facility.avgRating} type={facility.type} size="sm" />
             ) : (
@@ -135,18 +146,26 @@ export default function FacilityPage() {
             )}
           </div>
           <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Cleanliness</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">
+              Cleanliness
+            </p>
             <p className={`text-xl sm:text-2xl font-black ${cleanlinessColor}`}>
               {facility.avgCleanliness > 0 ? facility.avgCleanliness.toFixed(1) : '—'}
               <span className="text-xs sm:text-sm text-gray-400 dark:text-slate-500">/5</span>
             </p>
           </div>
           <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Reviews</p>
-            <p className="text-xl sm:text-2xl font-black text-uoft-blue dark:text-white">{facility.reviewCount}</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">
+              Reviews
+            </p>
+            <p className="text-xl sm:text-2xl font-black text-uoft-blue dark:text-white">
+              {facility.reviewCount}
+            </p>
           </div>
           <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Address</p>
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">
+              Address
+            </p>
             <p className="text-xs sm:text-sm font-semibold text-uoft-blue dark:text-white break-words">
               {facility.address}
             </p>
@@ -156,9 +175,13 @@ export default function FacilityPage() {
         {/* Cleanliness bar */}
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-bold text-gray-500 dark:text-slate-400">Cleanliness Score</span>
+            <span className="text-xs font-bold text-gray-500 dark:text-slate-400">
+              Cleanliness Score
+            </span>
             <span className={`text-xs font-bold ${cleanlinessColor}`}>
-              {facility.avgCleanliness > 0 ? `${((facility.avgCleanliness / 5) * 100).toFixed(0)}%` : 'No data'}
+              {facility.avgCleanliness > 0
+                ? `${((facility.avgCleanliness / 5) * 100).toFixed(0)}%`
+                : 'No data'}
             </span>
           </div>
           <div className="cleanliness-bar">
@@ -208,7 +231,9 @@ export default function FacilityPage() {
           <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 text-center card-shadow border border-blue-100 dark:border-slate-700">
             <p className="text-3xl mb-2">📝</p>
             <p className="text-gray-500 dark:text-slate-400 font-semibold">No reviews yet</p>
-            <p className="text-sm text-gray-400 dark:text-slate-500">Be the first to review this facility!</p>
+            <p className="text-sm text-gray-400 dark:text-slate-500">
+              Be the first to review this facility!
+            </p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -224,7 +249,9 @@ export default function FacilityPage() {
                         {review.userName.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-uoft-blue dark:text-white">{review.userName}</p>
+                        <p className="text-sm font-bold text-uoft-blue dark:text-white">
+                          {review.userName}
+                        </p>
                         <p className="text-xs text-gray-400 dark:text-slate-500">
                           {getTimeAgo(review.createdAt)}
                         </p>
@@ -240,12 +267,17 @@ export default function FacilityPage() {
                         type={facility.type}
                         size="sm"
                       />
-                      <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
-                        review.condition === 'Excellent' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' :
-                        review.condition === 'Good' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
-                        review.condition === 'Needs attention' ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300' :
-                        'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                      }`}>
+                      <span
+                        className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                          review.condition === 'Excellent'
+                            ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                            : review.condition === 'Good'
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                            : review.condition === 'Needs attention'
+                            ? 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300'
+                            : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                        }`}
+                      >
                         {conditionEmoji(review.condition)} {review.condition}
                       </span>
                       {facility.genderDesignation && (
@@ -256,44 +288,57 @@ export default function FacilityPage() {
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
-                      <span>Cleanliness: <strong>{review.cleanlinessRating}/5</strong></span>
+                      <span>
+                        Cleanliness: <strong>{review.cleanlinessRating}/5</strong>
+                      </span>
                     </div>
 
                     {/* Toilet amenities (only show for toilet reviews) */}
-                    {facility.type === 'toilet' && (review.hasToiletPaper !== undefined || review.hasSoap !== undefined || review.hasStallLock !== undefined) && (
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {review.hasToiletPaper !== undefined && (
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            review.hasToiletPaper 
-                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
-                              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                          }`}>
-                            {review.hasToiletPaper ? '🧻 Toilet paper' : '🧻 No toilet paper'}
-                          </span>
-                        )}
-                        {review.hasSoap !== undefined && (
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            review.hasSoap 
-                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
-                              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                          }`}>
-                            {review.hasSoap ? '🧼 Soap' : '🧼 No soap'}
-                          </span>
-                        )}
-                        {review.hasStallLock !== undefined && (
-                          <span className={`text-xs px-2 py-1 rounded-full ${
-                            review.hasStallLock 
-                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
-                              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                          }`}>
-                            {review.hasStallLock ? '🔒 Stall lock' : '🔒 No stall lock'}
-                          </span>
-                        )}
-                      </div>
-                    )}
+                    {facility.type === 'toilet' &&
+                      (review.hasToiletPaper !== undefined ||
+                        review.hasSoap !== undefined ||
+                        review.hasStallLock !== undefined) && (
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {review.hasToiletPaper !== undefined && (
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                review.hasToiletPaper
+                                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                  : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                              }`}
+                            >
+                              {review.hasToiletPaper ? '🧻 Toilet paper' : '🧻 No toilet paper'}
+                            </span>
+                          )}
+                          {review.hasSoap !== undefined && (
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                review.hasSoap
+                                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                  : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                              }`}
+                            >
+                              {review.hasSoap ? '🧼 Soap' : '🧼 No soap'}
+                            </span>
+                          )}
+                          {review.hasStallLock !== undefined && (
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                review.hasStallLock
+                                  ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                                  : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                              }`}
+                            >
+                              {review.hasStallLock ? '🔒 Stall lock' : '🔒 No stall lock'}
+                            </span>
+                          )}
+                        </div>
+                      )}
 
                     {review.comment && (
-                      <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{review.comment}</p>
+                      <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">
+                        {review.comment}
+                      </p>
                     )}
                   </div>
                 </div>
