@@ -209,8 +209,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setFacilities(updated);
     localStorage.setItem('uoftflow_facilities', JSON.stringify(updated));
 
-    // Always try to save to Supabase if user is authenticated
-    if (isAuthenticated) {
+    // Try to save to Supabase if connected
+    if (supabaseConnected) {
       try {
         console.log('💾 Saving facility to Supabase...');
         const { error } = await supabase.from('facilities').insert({
@@ -231,24 +231,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
         
         if (error) {
           console.error('❌ Failed to save facility to Supabase:', error.message);
-          console.error('Error details:', error);
-          // Show user-friendly error
-          if (error.message.includes('duplicate key') || error.code === '23505') {
-            alert('This facility already exists. Please refresh the page.');
-          } else if (error.message.includes('violates row-level security') || error.code === '42501') {
-            alert('Permission denied. Please sign in again and try.');
-          } else {
-            alert(`Failed to save facility: ${error.message}`);
-          }
         } else {
           console.log('✅ Facility saved to Supabase successfully');
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error('❌ Error saving facility to Supabase:', error);
-        alert(`Error saving facility: ${error.message || 'Unknown error'}`);
       }
     } else {
-      console.log('⚠️ User not authenticated, facility saved to localStorage only');
+      console.log('⚠️ Supabase not connected, facility saved to localStorage only');
     }
   };
 
