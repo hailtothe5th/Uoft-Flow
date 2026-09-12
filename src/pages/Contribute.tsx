@@ -41,7 +41,6 @@ export default function Contribute() {
   const [accessible, setAccessible] = useState(false);
   const [hasBottleFiller, setHasBottleFiller] = useState(false);
   const [hasChilled, setHasChilled] = useState(false);
-  const [initialComment, setInitialComment] = useState('');
 
   const [submitted, setSubmitted] = useState(false);
   const [newlyCreatedFacilityId, setNewlyCreatedFacilityId] = useState<string | null>(null);
@@ -93,7 +92,6 @@ export default function Contribute() {
               setAddress('');
               setFacilityId('');
               setNewlyCreatedFacilityId(null);
-              setInitialComment('');
             }}
             className="px-6 py-3 bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
           >
@@ -156,12 +154,6 @@ export default function Contribute() {
     addFacility(facility);
     setNewlyCreatedFacilityId(facility.id);
     setFacilityId(facility.id);
-    
-    // Pre-fill the review comment with the initial comment if provided
-    if (initialComment) {
-      setComment(initialComment);
-    }
-    
     // Switch to review mode for the newly created facility
   };
 
@@ -385,22 +377,6 @@ export default function Contribute() {
                 ♿ Wheelchair accessible
               </span>
             </label>
-
-            {/* Initial Comment/Description */}
-            <div>
-              <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-1">
-                Description <span className="text-gray-400 font-normal">(optional)</span>
-              </label>
-              <textarea
-                value={initialComment}
-                onChange={(e) => setInitialComment(e.target.value)}
-                placeholder="Add any initial notes about this facility..."
-                rows={3}
-                maxLength={500}
-                className="w-full px-4 py-3 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent resize-none"
-              />
-              <p className="text-xs text-gray-400 dark:text-slate-500 text-right">{initialComment.length}/500</p>
-            </div>
 
             {/* Submit Facility */}
             <button

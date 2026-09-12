@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import RatingDisplay from '../components/RatingDisplay';
 import ReportButton from '../components/ReportButton';
-import { getTimeAgo } from '../utils/timeAgo';
 import {
   ArrowLeft,
   MapPin,
