@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import RatingDisplay from '../components/RatingDisplay';
 import ReportButton from '../components/ReportButton';
+import { getTimeAgo } from '../utils/timeAgo';
 import {
   ArrowLeft,
   MapPin,
@@ -218,11 +219,7 @@ export default function FacilityPage() {
                       <div>
                         <p className="text-sm font-bold text-uoft-blue dark:text-white">{review.userName}</p>
                         <p className="text-xs text-gray-400 dark:text-slate-500">
-                          {new Date(review.createdAt).toLocaleDateString('en-CA', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
+                          {getTimeAgo(review.createdAt)}
                         </p>
                       </div>
                       <div className="ml-auto">
@@ -230,7 +227,7 @@ export default function FacilityPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 mb-2">
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
                       <RatingDisplay
                         rating={review.overallRating}
                         type={facility.type}
@@ -244,6 +241,11 @@ export default function FacilityPage() {
                       }`}>
                         {conditionEmoji(review.condition)} {review.condition}
                       </span>
+                      {facility.genderDesignation && (
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                          {facility.genderDesignation}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400 mb-2">
