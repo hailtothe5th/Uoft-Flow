@@ -4,6 +4,8 @@ import { useData } from '../context/DataContext';
 import RatingDisplay from '../components/RatingDisplay';
 import ReportButton from '../components/ReportButton';
 import MapView from '../components/MapView';
+import ErrorBoundary from '../components/ErrorBoundary';
+import { filterReviews } from '../utils/contentFilter';
 import { formatDistance, estimateWalkingTime } from '../utils/distance';
 import {
   ArrowLeft,
@@ -21,11 +23,14 @@ export default function FacilityPage() {
   const { facilitiesWithStats, reviews, userLocation } = useData();
 
   const facility = facilitiesWithStats.find((f) => f.id === id);
-  const { getVisibleReviews } = useData();
-  const facilityReviews = useMemo(
-    () => getVisibleReviews(id || '').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
-    [getVisibleReviews, id]
-  );
+  
+  // Filter reviews for this facility and apply content filtering
+  const facilityReviews = useMemo(() => {
+    if (!id) return [];
+    const facilityReviews = reviews.filter((r) => r.facilityId === id);
+    const { visible } = filterReviews(facilityReviews);
+    return visible.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }, [id, reviews]);
 
   if (!facility) {
     return (
@@ -188,14 +193,36 @@ export default function FacilityPage() {
 
       {/* Map View */}
       <div className="mb-6">
-        <MapView
-          lat={facility.lat}
-          lng={facility.lng}
-          name={facility.name}
-          building={facility.building}
-          floorNote={facility.floorNote}
-          type={facility.type}
-        />
+        <ErrorBoundary
+          fallback={
+            <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 card-shadow border border-slate-200 dark:border-slate-700">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                📍 {facility.building}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+                {facility.floorNote}
+              </p>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${facility.lat},${facility.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-uoft-blue text-white rounded-xl text-sm font-semibold hover:bg-uoft-blue-light transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open in Google Maps
+              </a>
+            </div>
+          }
+        >
+          <MapView
+            lat={facility.lat}
+            lng={facility.lng}
+            name={facility.name}
+            building={facility.building}
+            floorNote={facility.floorNote}
+            type={facility.type}
+          />
+        </ErrorBoundary>
       </div>
 
       {/* Write review CTA */}
