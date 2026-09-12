@@ -1,27 +1,21 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import FacilityCard from '../components/FacilityCard';
 import SetupBanner from '../components/SetupBanner';
 import { FilterType, SortOption, GenderDesignation } from '../types';
-import { MapPin, Navigation, ArrowUpDown, Filter, Search } from 'lucide-react';
+import { ArrowUpDown, Filter, Search } from 'lucide-react';
 
 export default function Home() {
-  const { facilitiesWithStats, userLocation, locationError, requestLocation, supabaseConnected, isLoading } = useData();
+  const { facilitiesWithStats, supabaseConnected, isLoading } = useData();
   const { isAuthenticated } = useAuth();
 
   const [filterType, setFilterType] = useState<FilterType>('all');
-  const [sortBy, setSortBy] = useState<SortOption>('distance');
+  const [sortBy, setSortBy] = useState<SortOption>('cleanliness');
   const [genderFilter, setGenderFilter] = useState<GenderDesignation | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-
-  useEffect(() => {
-    if (!userLocation && !locationError) {
-      requestLocation();
-    }
-  }, []);
 
   const filteredAndSorted = useMemo(() => {
     let result = [...facilitiesWithStats];
@@ -43,19 +37,13 @@ export default function Home() {
         (f) =>
           f.name.toLowerCase().includes(q) ||
           f.building.toLowerCase().includes(q) ||
-          f.floorNote.toLowerCase().includes(q)
+          f.floorNote.toLowerCase().includes(q) ||
+          f.address.toLowerCase().includes(q)
       );
     }
 
     // Sort
-    if (sortBy === 'distance') {
-      result.sort((a, b) => {
-        if (a.distance === undefined && b.distance === undefined) return 0;
-        if (a.distance === undefined) return 1;
-        if (b.distance === undefined) return -1;
-        return a.distance - b.distance;
-      });
-    } else if (sortBy === 'cleanliness') {
+    if (sortBy === 'cleanliness') {
       result.sort((a, b) => b.avgCleanliness - a.avgCleanliness);
     } else if (sortBy === 'rating') {
       result.sort((a, b) => b.avgRating - a.avgRating);
@@ -64,51 +52,20 @@ export default function Home() {
     return result;
   }, [facilitiesWithStats, filterType, sortBy, genderFilter, searchQuery]);
 
-  const nearestFacility = filteredAndSorted[0];
+  const topFacility = filteredAndSorted[0];
 
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
       {/* Setup banner */}
       {!isLoading && !supabaseConnected && <SetupBanner />}
 
-      {/* Location status */}
-      <div className="mb-8">
-        {userLocation ? (
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border border-green-200 dark:border-green-800">
-            <Navigation className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="font-medium">📍 Showing facilities near you</span>
-          </div>
-        ) : locationError ? (
-          <div className="flex items-center justify-between gap-3 text-sm bg-amber-50 dark:bg-amber-900/20 px-4 py-3 rounded-xl border border-amber-200 dark:border-amber-800">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-              <span className="text-amber-900 dark:text-amber-100">
-                <span className="font-semibold">Can't access your location</span>
-                <span className="hidden sm:inline"> — showing all facilities</span>
-              </span>
-            </div>
-            <button
-              onClick={requestLocation}
-              className="px-3 py-1.5 bg-amber-accent text-uoft-blue-dark rounded-lg text-xs font-bold hover:bg-amber-light transition-colors whitespace-nowrap"
-            >
-              Enable location
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-800 px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700">
-            <div className="w-4 h-4 border-2 border-gray-300 dark:border-slate-600 border-t-uoft-blue dark:border-t-amber-accent rounded-full animate-spin" />
-            <span>Finding your location...</span>
-          </div>
-        )}
-      </div>
-
-      {/* Nearest facility highlight */}
-      {nearestFacility && userLocation && (
+      {/* Top rated facility */}
+      {topFacility && (
         <div className="mb-6">
           <h2 className="text-sm font-bold text-uoft-blue dark:text-white mb-2 flex items-center gap-1">
-            <span className="text-lg">📍</span> Nearest to you
+            <span className="text-lg">⭐</span> Top Rated Facility
           </h2>
-          <FacilityCard facility={nearestFacility} />
+          <FacilityCard facility={topFacility} />
         </div>
       )}
 
@@ -203,7 +160,6 @@ export default function Home() {
               </label>
               <div className="flex gap-2 mt-1">
                 {[
-                  { value: 'distance', label: '📏 Distance' },
                   { value: 'cleanliness', label: '✨ Cleanliness' },
                   { value: 'rating', label: '⭐ Rating' },
                 ].map((opt) => (
@@ -229,7 +185,6 @@ export default function Home() {
           <ArrowUpDown className="w-4 h-4 text-gray-400 dark:text-slate-500" />
           <div className="flex gap-1">
             {[
-              { value: 'distance', label: 'Distance' },
               { value: 'cleanliness', label: 'Cleanliness' },
               { value: 'rating', label: 'Rating' },
             ].map((opt) => (

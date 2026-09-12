@@ -3,8 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import RatingDisplay from '../components/RatingDisplay';
 import ReportButton from '../components/ReportButton';
-import MapView from '../components/MapView';
-import { formatDistance, estimateWalkingTime } from '../utils/distance';
 import {
   ArrowLeft,
   MapPin,
@@ -56,8 +54,6 @@ export default function FacilityPage() {
       : facility.avgCleanliness >= 2
       ? 'bg-warn-orange'
       : 'bg-bad-red';
-
-  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${facility.lat},${facility.lng}`;
 
   const conditionEmoji = (condition: string) => {
     switch (condition) {
@@ -142,17 +138,10 @@ export default function FacilityPage() {
             <p className="text-xl sm:text-2xl font-black text-uoft-blue dark:text-white">{facility.reviewCount}</p>
           </div>
           <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Distance</p>
-            {facility.distance !== undefined ? (
-              <>
-                <p className="text-sm sm:text-lg font-black text-uoft-blue dark:text-white">
-                  {formatDistance(facility.distance)}
-                </p>
-                <p className="text-[10px] sm:text-xs text-gray-400 dark:text-slate-500">{estimateWalkingTime(facility.distance)}</p>
-              </>
-            ) : (
-              <p className="text-base sm:text-lg text-gray-400 dark:text-slate-500">—</p>
-            )}
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Address</p>
+            <p className="text-xs sm:text-sm font-semibold text-uoft-blue dark:text-white break-words">
+              {facility.address}
+            </p>
           </div>
         </div>
 
@@ -172,30 +161,22 @@ export default function FacilityPage() {
           </div>
         </div>
 
-        {/* Google Maps link */}
+        {/* Address & Google Maps link */}
         <div className="mt-4">
+          <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-slate-400 mb-3">
+            <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <p>{facility.address}</p>
+          </div>
           <a
-            href={googleMapsUrl}
+            href={`https://www.google.com/maps/search/${encodeURIComponent(facility.address)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 bg-uoft-blue dark:bg-slate-700 text-white rounded-xl text-sm font-semibold hover:bg-uoft-blue-light dark:hover:bg-slate-600 transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
-            Open in Google Maps
+            Get Directions
           </a>
         </div>
-      </div>
-
-      {/* Map View */}
-      <div className="mb-6">
-        <MapView
-          lat={facility.lat}
-          lng={facility.lng}
-          name={facility.name}
-          building={facility.building}
-          floorNote={facility.floorNote}
-          type={facility.type}
-        />
       </div>
 
       {/* Write review CTA */}

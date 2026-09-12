@@ -2,7 +2,6 @@ import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { FacilityWithStats } from '../types';
 import RatingDisplay from './RatingDisplay';
-import { formatDistance, estimateWalkingTime } from '../utils/distance';
 import { MapPin, Accessibility, Droplets, Thermometer } from 'lucide-react';
 
 interface FacilityCardProps {
@@ -81,16 +80,10 @@ export default memo(function FacilityCard({ facility }: FacilityCardProps) {
           </div>
         </div>
 
-        {/* Right side: rating and distance */}
+        {/* Right side: rating and review count */}
         <div className="flex flex-col items-end gap-2 shrink-0">
           {facility.avgRating > 0 && (
             <RatingDisplay rating={facility.avgRating} type={facility.type} size="sm" />
-          )}
-          {facility.distance !== undefined && (
-            <div className="text-right">
-              <p className="text-sm font-bold text-uoft-blue dark:text-white">{formatDistance(facility.distance)}</p>
-              <p className="text-xs text-gray-400 dark:text-slate-500">{estimateWalkingTime(facility.distance)}</p>
-            </div>
           )}
           <p className="text-xs text-gray-400 dark:text-slate-500 mt-1">
             {facility.reviewCount} review{facility.reviewCount !== 1 ? 's' : ''}

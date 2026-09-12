@@ -4,23 +4,22 @@ import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { Facility, FacilityType, GenderDesignation } from '../types';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeft, Check, Navigation, MapPin } from 'lucide-react';
+import { ArrowLeft, Check, MapPin } from 'lucide-react';
 
 export default function AddLocation() {
   const navigate = useNavigate();
-  const { addFacility, userLocation, requestLocation } = useData();
+  const { addFacility } = useData();
   const { user, isAuthenticated } = useAuth();
 
   const [type, setType] = useState<FacilityType>('toilet');
   const [name, setName] = useState('');
   const [building, setBuilding] = useState('');
   const [floorNote, setFloorNote] = useState('');
+  const [address, setAddress] = useState('');
   const [genderDesignation, setGenderDesignation] = useState<GenderDesignation>('All-gender');
   const [accessible, setAccessible] = useState(false);
   const [hasBottleFiller, setHasBottleFiller] = useState(false);
   const [hasChilled, setHasChilled] = useState(false);
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   if (!isAuthenticated) {
@@ -60,8 +59,7 @@ export default function AddLocation() {
               setName('');
               setBuilding('');
               setFloorNote('');
-              setLat('');
-              setLng('');
+              setAddress('');
             }}
             className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-colors"
           >
@@ -72,18 +70,9 @@ export default function AddLocation() {
     );
   }
 
-  const useCurrentLocation = () => {
-    if (!userLocation) {
-      requestLocation();
-      return;
-    }
-    setLat(userLocation.lat.toString());
-    setLng(userLocation.lng.toString());
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !building || !floorNote) return;
+    if (!name || !building || !floorNote || !address) return;
 
     const facility: Facility = {
       id: uuidv4(),
@@ -91,10 +80,9 @@ export default function AddLocation() {
       name,
       building,
       floorNote,
+      address,
       genderDesignation: type === 'toilet' ? genderDesignation : undefined,
       accessible,
-      lat: parseFloat(lat) || 43.6629,
-      lng: parseFloat(lng) || -79.3956,
       hasBottleFiller: type === 'fountain' ? hasBottleFiller : undefined,
       hasChilled: type === 'fountain' ? hasChilled : undefined,
       createdAt: new Date().toISOString(),
@@ -258,44 +246,28 @@ export default function AddLocation() {
             <span className="text-sm font-semibold text-gray-700">♿ Wheelchair accessible</span>
           </label>
 
-          {/* Location */}
+          {/* Address */}
           <div>
             <label className="block text-sm font-bold text-uoft-blue mb-1">
-              Coordinates <span className="text-gray-400 font-normal">(optional)</span>
+              Address <span className="text-red-500">*</span>
             </label>
-            <div className="flex gap-2 mb-2">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
-                type="number"
-                step="any"
-                value={lat}
-                onChange={(e) => setLat(e.target.value)}
-                placeholder="Latitude"
-                className="flex-1 px-3 py-2 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50"
-              />
-              <input
-                type="number"
-                step="any"
-                value={lng}
-                onChange={(e) => setLng(e.target.value)}
-                placeholder="Longitude"
-                className="flex-1 px-3 py-2 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50"
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="e.g., 130 St. George St, Toronto, ON M5S 1A5"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+                required
               />
             </div>
-            <button
-              type="button"
-              onClick={useCurrentLocation}
-              className="flex items-center gap-1 text-sm text-uoft-blue font-semibold hover:text-uoft-blue-light transition-colors"
-            >
-              <Navigation className="w-4 h-4" />
-              Use my current location
-              <MapPin className="w-3 h-3" />
-            </button>
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            disabled={!name || !building || !floorNote}
+            disabled={!name || !building || !floorNote || !address}
             className="w-full py-3 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold text-lg hover:bg-amber-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <Check className="w-5 h-5" />

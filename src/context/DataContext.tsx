@@ -181,10 +181,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     name: row.name,
     building: row.building,
     floorNote: row.floor_note,
+    address: row.address,
     genderDesignation: row.gender_designation,
     accessible: row.accessible,
-    lat: row.lat,
-    lng: row.lng,
     hasBottleFiller: row.has_bottle_filler,
     hasChilled: row.has_chilled,
     createdAt: row.created_at,
@@ -219,10 +218,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
           name: facility.name,
           building: facility.building,
           floor_note: facility.floorNote,
+          address: facility.address,
           gender_designation: facility.genderDesignation,
           accessible: facility.accessible,
-          lat: facility.lat,
-          lng: facility.lng,
           has_bottle_filler: facility.hasBottleFiller,
           has_chilled: facility.hasChilled,
           created_at: facility.createdAt,
@@ -402,16 +400,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       facilityReviews.length > 0
         ? facilityReviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / facilityReviews.length
         : 0;
-    const distance = userLocation
-      ? haversineDistance(userLocation.lat, userLocation.lng, f.lat, f.lng)
-      : undefined;
 
     return {
       ...f,
       avgRating,
       avgCleanliness,
       reviewCount: facilityReviews.length,
-      distance,
     };
   });
 
