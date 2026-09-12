@@ -64,42 +64,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loadUserProfile = async (userId: string, email: string) => {
     console.log('🔍 Loading user profile for:', userId, email);
     
-    // Try to load profile from Supabase
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('display_name')
-      .eq('id', userId)
-      .single();
-
-    console.log('📋 Profile query result:', { profile, error });
-
-    // If profile doesn't exist, create it
-    if (error || !profile) {
-      console.log('⚠️ Profile not found, creating new profile...');
-      const displayName = email.split('@')[0] || 'Student';
-      const { error: insertError } = await supabase
+    // Set user immediately with default display name
+    const defaultDisplayName = email.split('@')[0] || 'Student';
+    const appUser: User = { id: userId, email, displayName: defaultDisplayName };
+    setUser(appUser);
+    localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
+    
+    // Try to load profile from Supabase (non-blocking)
+    try {
+      const { data: profile, error } = await supabase
         .from('profiles')
-        .insert({
-          id: userId,
-          email: email,
-          display_name: displayName,
-        });
-      
-      if (insertError) {
-        console.error('❌ Failed to create profile:', insertError);
-      } else {
-        console.log('✅ Profile created successfully');
+        .select('display_name')
+        .eq('id', userId)
+        .single();
+
+      console.log('📋 Profile query result:', { profile, error });
+
+      // If profile exists, update with display name
+      if (profile && profile.display_name) {
+        const updatedUser = { ...appUser, displayName: profile.display_name };
+        setUser(updatedUser);
+        localStorage.setItem('uoftflow_user', JSON.stringify(updatedUser));
+        console.log('✅ User profile loaded:', updatedUser);
+      } else if (error?.code === 'PGRST116') {
+        // Profile doesn't exist (PGRST116 = no rows returned), try to create it
+        console.log('⚠️ Profile not found, creating new profile...');
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: email,
+            display_name: defaultDisplayName,
+          });
+        
+        if (insertError) {
+          console.warn('⚠️ Could not create profile (non-critical):', insertError.message);
+          // Don't block login - user can still use the app
+        } else {
+          console.log('✅ Profile created successfully');
+        }
       }
-      
-      const appUser: User = { id: userId, email, displayName };
-      setUser(appUser);
-      localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
-    } else {
-      const displayName = profile.display_name || email.split('@')[0] || 'Student';
-      const appUser: User = { id: userId, email, displayName };
-      setUser(appUser);
-      localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
-      console.log('✅ User profile loaded:', appUser);
+    } catch (err) {
+      console.warn('⚠️ Profile loading failed (non-critical):', err);
+      // Don't block login - user can still use the app
     }
   };
 
