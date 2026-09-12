@@ -34,29 +34,23 @@ export default function Signup() {
     try {
       await signUp(email, password, displayName);
       
-      // Check if we have a session (user is signed in)
+      // Check if email confirmation is required
       const { data } = await supabase.auth.getSession();
       if (data.session) {
         // User is already signed in (email confirmation not required)
         navigate('/');
       } else {
-        // Email confirmation required - show success message
-        setSuccessMessage('Account created! Please check your email to confirm your account, then sign in.');
-        setTimeout(() => {
-          navigate('/login');
-        }, 3000);
+        // Email confirmation required
+        navigate('/login?message=check-email');
       }
     } catch (err: any) {
       console.error('Signup error:', err);
       
       // Provide helpful error messages
-      if (err.message?.includes('already registered') || err.message?.includes('already been registered')) {
+      if (err.message?.includes('already registered')) {
         setError('An account with this email already exists. Please sign in instead.');
       } else if (err.message?.includes('password')) {
         setError('Password is too weak. Please use at least 6 characters.');
-      } else if (err.message?.includes('check your email')) {
-        setError(err.message);
-        setSuccessMessage('Please check your email inbox (and spam folder) for the confirmation link.');
       } else {
         setError(err.message || 'Failed to create account. Please try again.');
       }
