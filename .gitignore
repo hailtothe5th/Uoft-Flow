@@ -1,29 +1,5 @@
-# Dependencies
 node_modules/
-
-# Build output
-dist/
-
-# Environment variables (NEVER commit secrets)
-.env
-.env.local
-.env.*.local
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*
-
-# Supabase (local dev only)
-.supabase/
 .next/
+dist/
 build/
+*.log
