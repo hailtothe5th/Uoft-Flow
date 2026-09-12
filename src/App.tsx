@@ -6,6 +6,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import SkipToContent from './components/SkipToContent';
+import DatabaseStatus from './components/DatabaseStatus';
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'));
@@ -65,6 +66,7 @@ function App() {
                 </Routes>
               </Suspense>              </main>
               <Footer />
+              <DatabaseStatus />
             </div>
           </DataProvider>
         </AuthProvider>
