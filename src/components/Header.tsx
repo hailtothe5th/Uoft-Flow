@@ -7,7 +7,7 @@ import AccessibilityControls from './AccessibilityControls';
 
 export default function Header() {
   const { user, signOut, isAuthenticated } = useAuth();
-  const { resolvedTheme, setTheme } = useTheme();
+  const { settings, resolvedTheme, setTheme } = useTheme();
   const location = useLocation();
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -16,7 +16,7 @@ export default function Header() {
 
   const cycleTheme = () => {
     const themes: Array<'light' | 'dark' | 'system'> = ['light', 'dark', 'system'];
-    const currentIndex = themes.indexOf(resolvedTheme as 'light' | 'dark' | 'system');
+    const currentIndex = themes.indexOf(settings.theme);
     const nextIndex = (currentIndex + 1) % themes.length;
     setTheme(themes[nextIndex]);
   };

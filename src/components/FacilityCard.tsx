@@ -12,12 +12,12 @@ interface FacilityCardProps {
 export default memo(function FacilityCard({ facility }: FacilityCardProps) {
   const cleanlinessColor =
     facility.avgCleanliness >= 4
-      ? 'bg-success'
+      ? 'bg-clean-green'
       : facility.avgCleanliness >= 3
-      ? 'bg-warning'
+      ? 'bg-warn-orange'
       : facility.avgCleanliness >= 2
-      ? 'bg-warning'
-      : 'bg-error';
+      ? 'bg-warn-orange'
+      : 'bg-bad-red';
 
   const cleanlinessWidth = (facility.avgCleanliness / 5) * 100;
 
