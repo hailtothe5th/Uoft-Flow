@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 import { LogIn, Mail, Lock } from 'lucide-react';
 
 export default function Login() {
@@ -16,8 +17,11 @@ export default function Login() {
     setError('');
     setLoading(true);
 
+    console.log('🔐 Login attempt with email:', email);
+
     try {
       await signIn(email, password);
+      console.log('✅ Login successful!');
       navigate('/');
     } catch (err: any) {
       console.error('Login error:', err);

@@ -14,6 +14,7 @@ const SubmitReview = lazy(() => import('./pages/SubmitReview'));
 const AddLocation = lazy(() => import('./pages/AddLocation'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
+const AccountChecker = lazy(() => import('./pages/AccountChecker'));
 const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const UpdatePassword = lazy(() => import('./pages/UpdatePassword'));
 const ChangePassword = lazy(() => import('./pages/ChangePassword'));
@@ -57,10 +58,10 @@ function App() {
                   <Route path="/facility/:id" element={<FacilityPage />} />
                   <Route path="/submit" element={<SubmitReview />} />
                   <Route path="/add" element={<AddLocation />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/update-password" element={<UpdatePassword />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/check-account" element={<AccountChecker />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />                  <Route path="/update-password" element={<UpdatePassword />} />
                   <Route path="/change-password" element={<ChangePassword />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/debug" element={<DebugDatabase />} />

@@ -62,31 +62,75 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadUserProfile = async (userId: string, email: string) => {
-    // Try to load profile from Supabase
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('display_name')
-      .eq('id', userId)
-      .single();
-
-    const displayName = profile?.display_name || email.split('@')[0] || 'Student';
-    const appUser: User = { id: userId, email, displayName };
+    console.log('🔍 Loading user profile for:', userId, email);
+    
+    // Set user immediately with default display name
+    const defaultDisplayName = email.split('@')[0] || 'Student';
+    const appUser: User = { id: userId, email, displayName: defaultDisplayName };
     setUser(appUser);
     localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
+    
+    // Try to load profile from Supabase (non-blocking)
+    try {
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', userId)
+        .single();
+
+      console.log('📋 Profile query result:', { profile, error });
+
+      // If profile exists, update with display name
+      if (profile && profile.display_name) {
+        const updatedUser = { ...appUser, displayName: profile.display_name };
+        setUser(updatedUser);
+        localStorage.setItem('uoftflow_user', JSON.stringify(updatedUser));
+        console.log('✅ User profile loaded:', updatedUser);
+      } else if (error?.code === 'PGRST116') {
+        // Profile doesn't exist (PGRST116 = no rows returned), try to create it
+        console.log('⚠️ Profile not found, creating new profile...');
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: email,
+            display_name: defaultDisplayName,
+          });
+        
+        if (insertError) {
+          console.warn('⚠️ Could not create profile (non-critical):', insertError.message);
+          // Don't block login - user can still use the app
+        } else {
+          console.log('✅ Profile created successfully');
+        }
+      }
+    } catch (err) {
+      console.warn('⚠️ Profile loading failed (non-critical):', err);
+      // Don't block login - user can still use the app
+    }
   };
 
   const signIn = async (email: string, password: string) => {
+    console.log('🔐 Attempting to sign in:', email);
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    console.log('🔑 Sign in result:', { data, error });
+
     if (error) {
+      console.error('❌ Sign in error:', error);
       throw error;
     }
 
     if (data.user) {
+      console.log('✅ User authenticated, loading profile...');
       await loadUserProfile(data.user.id, data.user.email || email);
+    } else {
+      console.error('❌ No user data returned from sign in');
+      throw new Error('Sign in failed: No user data returned');
     }
   };
 
@@ -103,13 +147,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
 
-    // Create profile if user was created
-    if (data.user) {
+    // Check if email confirmation is required
+    if (data.user && !data.session) {
+      // Email confirmation required - user needs to check their email
+      throw new Error('Please check your email to confirm your account before signing in.');
+    }
+
+    // If we have a session, user is already signed in (email confirmation not required)
+    if (data.session && data.user) {
+      // Create profile
       await supabase.from('profiles').upsert({
         id: data.user.id,
         email: data.user.email,
         display_name: displayName,
       });
+      
+      // Set user in context
+      const appUser: User = { 
+        id: data.user.id, 
+        email: data.user.email || email, 
+        displayName 
+      };
+      setUser(appUser);
+      localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
     }
   };
 
