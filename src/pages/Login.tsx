@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 import { LogIn, Mail, Lock } from 'lucide-react';
 
 export default function Login() {
@@ -16,15 +17,20 @@ export default function Login() {
     setError('');
     setLoading(true);
 
+    console.log('🔐 Login attempt with email:', email);
+
     try {
       await signIn(email, password);
+      console.log('✅ Login successful!');
       navigate('/');
     } catch (err: any) {
-      console.error('Login error:', err);
+      console.error('❌ Login error details:', err);
+      console.error('❌ Error message:', err.message);
+      console.error('❌ Error status:', err.status);
       
       // Provide helpful error messages
       if (err.message?.includes('Invalid login credentials')) {
-        setError('Invalid email or password. Please check your credentials or sign up for a new account.');
+        setError('Invalid email or password. Please check your credentials or try resetting your password.');
       } else if (err.message?.includes('Email not confirmed')) {
         setError('Please check your email and confirm your account before signing in.');
       } else if (err.message?.includes('User not found')) {
