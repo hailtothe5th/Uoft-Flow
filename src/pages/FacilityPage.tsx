@@ -17,34 +17,33 @@ import {
 export default function FacilityPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { facilitiesWithStats, reviews, userLocation, getVisibleReviews } = useData();
+
+  const facility = facilitiesWithStats.find((f) => f.id === id);
   
-  try {
-    const { facilitiesWithStats, reviews, userLocation, getVisibleReviews } = useData();
-
-    const facility = facilitiesWithStats.find((f) => f.id === id);
-    const facilityReviews = useMemo(
-      () => {
-        try {
-          return getVisibleReviews(id || '').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        } catch (err) {
-          console.error('Error getting visible reviews:', err);
-          return [];
-        }
-      },
-      [getVisibleReviews, id]
-    );
-
-    if (!facility) {
-      return (
-        <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-          <p className="text-4xl mb-3">🤷</p>
-          <p className="text-xl font-bold text-uoft-blue dark:text-white mb-2">Facility not found</p>
-          <Link to="/" className="text-amber-accent font-semibold hover:underline">
-            ← Back to facilities
-          </Link>
-        </div>
+  const facilityReviews = useMemo(() => {
+    if (!id || !getVisibleReviews) return [];
+    try {
+      return getVisibleReviews(id).sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
+    } catch (err) {
+      console.error('Error getting visible reviews:', err);
+      return [];
     }
+  }, [getVisibleReviews, id]);
+
+  if (!facility) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+        <p className="text-4xl mb-3">🤷</p>
+        <p className="text-xl font-bold text-uoft-blue dark:text-white mb-2">Facility not found</p>
+        <Link to="/" className="text-amber-accent font-semibold hover:underline">
+          ← Back to facilities
+        </Link>
+      </div>
+    );
+  }
 
   const cleanlinessColor =
     facility.avgCleanliness >= 4
@@ -305,17 +304,4 @@ export default function FacilityPage() {
       </div>
     </div>
   );
-  } catch (error) {
-    console.error('Error in FacilityPage:', error);
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-12 text-center">
-        <p className="text-4xl mb-3">⚠️</p>
-        <p className="text-xl font-bold text-uoft-blue dark:text-white mb-2">Error loading facility</p>
-        <p className="text-gray-500 dark:text-slate-400 mb-4">Please check the browser console for details</p>
-        <Link to="/" className="text-amber-accent font-semibold hover:underline">
-          ← Back to home
-        </Link>
-      </div>
-    );
-  }
 }
