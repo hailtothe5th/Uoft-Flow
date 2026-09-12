@@ -31,8 +31,8 @@ export default function Login() {
       <div className="max-w-md w-full">
         <div className="card p-8">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-uoft-blue rounded-3xl mb-6">
-              <LogIn className="w-10 h-10 text-white" />
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-6 overflow-hidden">
+              <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
             </div>
             <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">Welcome Back</h1>
             <p className="text-[var(--text-secondary)]">Sign in to your UofT Flow account</p>

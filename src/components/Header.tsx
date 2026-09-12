@@ -27,8 +27,8 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-uoft-blue flex items-center justify-center group-hover:scale-105 transition-transform">
-              <Droplets className="w-5 h-5 text-white" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+              <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
             </div>
             <div>
               <h1 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">UofT Flow</h1>

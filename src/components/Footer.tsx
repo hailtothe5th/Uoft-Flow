@@ -9,8 +9,8 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-uoft-blue flex items-center justify-center">
-              <Droplets className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-lg overflow-hidden">
+              <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
             </div>
             <div>
               <p className="font-semibold text-[var(--text-primary)]">UofT Flow</p>
