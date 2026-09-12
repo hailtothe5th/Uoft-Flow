@@ -1,6 +1,8 @@
 export type FacilityType = 'toilet' | 'fountain';
 export type GenderDesignation = "Men's" | "Women's" | 'All-gender';
 export type Condition = 'Excellent' | 'Good' | 'Needs attention' | 'Out of order';
+export type ReportReason = 'spam' | 'inappropriate' | 'false-info' | 'harassment' | 'other';
+export type ReportStatus = 'pending' | 'reviewed' | 'dismissed';
 
 export interface Facility {
   id: string;
@@ -27,6 +29,18 @@ export interface Review {
   cleanlinessRating: number; // 1-5
   condition: Condition;
   comment: string;
+  createdAt: string;
+  reportCount?: number;
+}
+
+export interface Report {
+  id: string;
+  reviewId: string;
+  reporterId: string;
+  reporterName: string;
+  reason: ReportReason;
+  description: string;
+  status: ReportStatus;
   createdAt: string;
 }
 

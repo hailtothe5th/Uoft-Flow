@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import RatingDisplay from '../components/RatingDisplay';
+import ReportButton from '../components/ReportButton';
+import MapView from '../components/MapView';
 import { formatDistance, estimateWalkingTime } from '../utils/distance';
 import {
   ArrowLeft,
@@ -19,9 +21,10 @@ export default function FacilityPage() {
   const { facilitiesWithStats, reviews, userLocation } = useData();
 
   const facility = facilitiesWithStats.find((f) => f.id === id);
+  const { getVisibleReviews } = useData();
   const facilityReviews = useMemo(
-    () => reviews.filter((r) => r.facilityId === id).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
-    [reviews, id]
+    () => getVisibleReviews(id || '').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+    [getVisibleReviews, id]
   );
 
   if (!facility) {
@@ -183,6 +186,18 @@ export default function FacilityPage() {
         </div>
       </div>
 
+      {/* Map View */}
+      <div className="mb-6">
+        <MapView
+          lat={facility.lat}
+          lng={facility.lng}
+          name={facility.name}
+          building={facility.building}
+          floorNote={facility.floorNote}
+          type={facility.type}
+        />
+      </div>
+
       {/* Write review CTA */}
       <div className="mb-6">
         <Link
@@ -228,6 +243,9 @@ export default function FacilityPage() {
                             day: 'numeric',
                           })}
                         </p>
+                      </div>
+                      <div className="ml-auto">
+                        <ReportButton reviewId={review.id} />
                       </div>
                     </div>
 

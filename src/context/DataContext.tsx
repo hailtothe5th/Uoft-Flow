@@ -1,15 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Facility, Review, FacilityWithStats } from '../types';
+import { Facility, Review, FacilityWithStats, Report } from '../types';
 import { seedFacilities, seedReviews } from '../data/seedData';
 import { haversineDistance } from '../utils/distance';
 import { supabase } from '../lib/supabase';
+import { filterReviews } from '../utils/contentFilter';
 
 interface DataContextType {
   facilities: Facility[];
   reviews: Review[];
   facilitiesWithStats: FacilityWithStats[];
+  reports: Report[];
   addFacility: (facility: Facility) => Promise<void>;
   addReview: (review: Review) => Promise<void>;
+  addReport: (report: Report) => Promise<void>;
+  getVisibleReviews: (facilityId: string) => Review[];
   userLocation: { lat: number; lng: number } | null;
   setUserLocation: (loc: { lat: number; lng: number } | null) => void;
   locationError: string | null;
@@ -22,8 +26,11 @@ const DataContext = createContext<DataContextType>({
   facilities: [],
   reviews: [],
   facilitiesWithStats: [],
+  reports: [],
   addFacility: async () => {},
   addReview: async () => {},
+  addReport: async () => {},
+  getVisibleReviews: () => [],
   userLocation: null,
   setUserLocation: () => {},
   locationError: null,
@@ -35,6 +42,7 @@ const DataContext = createContext<DataContextType>({
 export function DataProvider({ children }: { children: ReactNode }) {
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [reports, setReports] = useState<Report[]>([]);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -81,6 +89,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
           localStorage.setItem('uoftflow_reviews', JSON.stringify(seedReviews));
         }
       }
+
+      // Load reports from localStorage
+      const storedReports = localStorage.getItem('uoftflow_reports');
+      if (storedReports) {
+        setReports(JSON.parse(storedReports));
+      }
     } catch (error) {
       console.warn('Failed to load from Supabase, using fallback:', error);
       // Fallback to localStorage or seed data
@@ -99,6 +113,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       } else {
         setReviews(seedReviews);
         localStorage.setItem('uoftflow_reviews', JSON.stringify(seedReviews));
+      }
+
+      // Load reports from localStorage
+      const storedReports = localStorage.getItem('uoftflow_reports');
+      if (storedReports) {
+        setReports(JSON.parse(storedReports));
       }
     }
 
@@ -183,6 +203,46 @@ export function DataProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const addReport = async (report: Report) => {
+    const updated = [...reports, report];
+    setReports(updated);
+    localStorage.setItem('uoftflow_reports', JSON.stringify(updated));
+
+    // Update the review's report count
+    const review = reviews.find(r => r.id === report.reviewId);
+    if (review) {
+      const updatedReviews = reviews.map(r => 
+        r.id === report.reviewId 
+          ? { ...r, reportCount: (r.reportCount || 0) + 1 }
+          : r
+      );
+      setReviews(updatedReviews);
+      localStorage.setItem('uoftflow_reviews', JSON.stringify(updatedReviews));
+    }
+
+    // Try to save to Supabase
+    try {
+      await supabase.from('reports').insert({
+        id: report.id,
+        review_id: report.reviewId,
+        reporter_id: report.reporterId,
+        reporter_name: report.reporterName,
+        reason: report.reason,
+        description: report.description,
+        status: report.status,
+        created_at: report.createdAt,
+      });
+    } catch (error) {
+      console.warn('Failed to save report to Supabase:', error);
+    }
+  };
+
+  const getVisibleReviews = (facilityId: string): Review[] => {
+    const facilityReviews = reviews.filter(r => r.facilityId === facilityId);
+    const { visible } = filterReviews(facilityReviews);
+    return visible;
+  };
+
   const requestLocation = () => {
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser');
@@ -230,8 +290,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
         facilities,
         reviews,
         facilitiesWithStats,
+        reports,
         addFacility,
         addReview,
+        addReport,
+        getVisibleReviews,
         userLocation,
         setUserLocation,
         locationError,
