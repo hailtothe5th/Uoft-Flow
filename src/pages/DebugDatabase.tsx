@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
+import { useData } from '../context/DataContext';
 
 export default function DebugDatabase() {
   const { user, isAuthenticated } = useAuth();
+  const { refreshData } = useData();
   const [logs, setLogs] = useState<string[]>([]);
   const [testing, setTesting] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev, `[${new Date().toLocaleTimeString()}] ${message}`]);
@@ -151,13 +154,29 @@ export default function DebugDatabase() {
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-lg p-6 mb-6">
         <h2 className="text-xl font-semibold mb-4">Connection Test</h2>
         
-        <button
-          onClick={testConnection}
-          disabled={testing}
-          className="px-6 py-3 bg-uoft-blue text-white rounded-lg font-semibold hover:bg-uoft-blue-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {testing ? 'Testing...' : 'Run Database Test'}
-        </button>
+        <div className="flex gap-3 flex-wrap">
+          <button
+            onClick={testConnection}
+            disabled={testing}
+            className="px-6 py-3 bg-uoft-blue text-white rounded-lg font-semibold hover:bg-uoft-blue-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {testing ? 'Testing...' : 'Run Database Test'}
+          </button>
+          
+          <button
+            onClick={async () => {
+              setRefreshing(true);
+              addLog('🔄 Forcing data refresh from Supabase...');
+              await refreshData();
+              addLog('✅ Data refresh complete! Check console for details.');
+              setRefreshing(false);
+            }}
+            disabled={refreshing}
+            className="px-6 py-3 bg-amber-accent text-uoft-blue-dark rounded-lg font-semibold hover:bg-amber-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {refreshing ? 'Refreshing...' : '🔄 Force Refresh Data'}
+          </button>
+        </div>
         
         {logs.length > 0 && (
           <div className="mt-6">
