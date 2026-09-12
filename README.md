@@ -21,10 +21,6 @@ UofT Flow lets students submit and browse info on campus toilets and water fount
 - Hosting: Vercel(https://vercel.com)
 - Maps and geolocation: Google Maps Platform
 
-## Support the project
-
-UofT Flow is free to use and ad free. If it's helped you out, you can support hosting and API costs on [Ko-fi](https://ko-fi.com/[your-page]).
-
 ## License
 
 All rights reserved
