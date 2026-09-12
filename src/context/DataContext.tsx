@@ -53,17 +53,53 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadData = async () => {
+    let supabaseAvailable = false;
+    
     try {
-      // Try to load from Supabase
+      console.log('🔄 Attempting to load data from Supabase...');
+      
+      // Test Supabase connection first
+      const { data: testData, error: testError } = await supabase
+        .from('facilities')
+        .select('id')
+        .limit(1);
+      
+      if (testError) {
+        console.error('❌ Supabase connection failed:', testError.message);
+        console.error('Error details:', testError);
+        throw testError;
+      }
+      
+      console.log('✅ Supabase connection successful');
+      
+      // Load facilities from Supabase
       const { data: supabaseFacilities, error: facilitiesError } = await supabase
         .from('facilities')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
+      if (facilitiesError) {
+        console.error('❌ Failed to load facilities from Supabase:', facilitiesError.message);
+        throw facilitiesError;
+      }
+
+      console.log(`✅ Loaded ${supabaseFacilities?.length || 0} facilities from Supabase`);
+
+      // Load reviews from Supabase
       const { data: supabaseReviews, error: reviewsError } = await supabase
         .from('reviews')
-        .select('*');
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      if (!facilitiesError && supabaseFacilities && supabaseFacilities.length > 0) {
+      if (reviewsError) {
+        console.error('❌ Failed to load reviews from Supabase:', reviewsError.message);
+        throw reviewsError;
+      }
+
+      console.log(`✅ Loaded ${supabaseReviews?.length || 0} reviews from Supabase`);
+
+      // Set data from Supabase
+      if (supabaseFacilities && supabaseFacilities.length > 0) {
         setFacilities(supabaseFacilities.map(mapSupabaseFacility));
         setSupabaseConnected(true);
       } else {
@@ -77,17 +113,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      if (!reviewsError && supabaseReviews && supabaseReviews.length > 0) {
+      if (supabaseReviews && supabaseReviews.length > 0) {
         setReviews(supabaseReviews.map(mapSupabaseReview));
-      } else {
-        // Fallback to localStorage or seed data
-        const storedReviews = localStorage.getItem('uoftflow_reviews');
-        if (storedReviews) {
-          setReviews(JSON.parse(storedReviews));
-        } else {
-          setReviews(seedReviews);
-          localStorage.setItem('uoftflow_reviews', JSON.stringify(seedReviews));
-        }
+      }
+
+      setSupabaseConnected(supabaseAvailable);
+      
+      if (supabaseAvailable) {
+        console.log('🎉 Successfully loaded all data from Supabase!');
       }
 
       // Load reports from localStorage
@@ -96,23 +129,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setReports(JSON.parse(storedReports));
       }
     } catch (error) {
-      console.warn('Failed to load from Supabase, using fallback:', error);
-      // Fallback to localStorage or seed data
-      const storedFacilities = localStorage.getItem('uoftflow_facilities');
-      const storedReviews = localStorage.getItem('uoftflow_reviews');
+      console.warn('⚠️ Supabase not available, using fallback data:', error);
+      supabaseAvailable = false;
+    }
 
+    // Fallback to localStorage or seed data if Supabase is not available
+    if (!supabaseAvailable) {
+      console.log('📦 Loading from localStorage or seed data...');
+      
+      const storedFacilities = localStorage.getItem('uoftflow_facilities');
       if (storedFacilities) {
         setFacilities(JSON.parse(storedFacilities));
+        console.log('✅ Loaded facilities from localStorage');
       } else {
         setFacilities(seedFacilities);
         localStorage.setItem('uoftflow_facilities', JSON.stringify(seedFacilities));
+        console.log('✅ Loaded seed facilities');
       }
 
+      const storedReviews = localStorage.getItem('uoftflow_reviews');
       if (storedReviews) {
         setReviews(JSON.parse(storedReviews));
+        console.log('✅ Loaded reviews from localStorage');
       } else {
         setReviews(seedReviews);
         localStorage.setItem('uoftflow_reviews', JSON.stringify(seedReviews));
+        console.log('✅ Loaded seed reviews');
       }
 
       // Load reports from localStorage
@@ -120,6 +162,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       if (storedReports) {
         setReports(JSON.parse(storedReports));
       }
+    }
+
+    // Load reports from localStorage
+    const storedReports = localStorage.getItem('uoftflow_reports');
+    if (storedReports) {
+      setReports(JSON.parse(storedReports));
     }
 
     setIsLoading(false);
@@ -154,52 +202,76 @@ export function DataProvider({ children }: { children: ReactNode }) {
   });
 
   const addFacility = async (facility: Facility) => {
+    // Update local state immediately for responsive UI
     const updated = [...facilities, facility];
     setFacilities(updated);
     localStorage.setItem('uoftflow_facilities', JSON.stringify(updated));
 
-    // Try to save to Supabase
-    try {
-      await supabase.from('facilities').insert({
-        id: facility.id,
-        type: facility.type,
-        name: facility.name,
-        building: facility.building,
-        floor_note: facility.floorNote,
-        gender_designation: facility.genderDesignation,
-        accessible: facility.accessible,
-        lat: facility.lat,
-        lng: facility.lng,
-        has_bottle_filler: facility.hasBottleFiller,
-        has_chilled: facility.hasChilled,
-        created_at: facility.createdAt,
-        created_by: facility.createdBy,
-      });
-    } catch (error) {
-      console.warn('Failed to save facility to Supabase:', error);
+    // Try to save to Supabase if connected
+    if (supabaseConnected) {
+      try {
+        console.log('💾 Saving facility to Supabase...');
+        const { error } = await supabase.from('facilities').insert({
+          id: facility.id,
+          type: facility.type,
+          name: facility.name,
+          building: facility.building,
+          floor_note: facility.floorNote,
+          gender_designation: facility.genderDesignation,
+          accessible: facility.accessible,
+          lat: facility.lat,
+          lng: facility.lng,
+          has_bottle_filler: facility.hasBottleFiller,
+          has_chilled: facility.hasChilled,
+          created_at: facility.createdAt,
+          created_by: facility.createdBy,
+        });
+        
+        if (error) {
+          console.error('❌ Failed to save facility to Supabase:', error.message);
+        } else {
+          console.log('✅ Facility saved to Supabase successfully');
+        }
+      } catch (error) {
+        console.error('❌ Error saving facility to Supabase:', error);
+      }
+    } else {
+      console.log('⚠️ Supabase not connected, facility saved to localStorage only');
     }
   };
 
   const addReview = async (review: Review) => {
+    // Update local state immediately for responsive UI
     const updated = [...reviews, review];
     setReviews(updated);
     localStorage.setItem('uoftflow_reviews', JSON.stringify(updated));
 
-    // Try to save to Supabase
-    try {
-      await supabase.from('reviews').insert({
-        id: review.id,
-        facility_id: review.facilityId,
-        user_id: review.userId,
-        user_name: review.userName,
-        overall_rating: review.overallRating,
-        cleanliness_rating: review.cleanlinessRating,
-        condition: review.condition,
-        comment: review.comment,
-        created_at: review.createdAt,
-      });
-    } catch (error) {
-      console.warn('Failed to save review to Supabase:', error);
+    // Try to save to Supabase if connected
+    if (supabaseConnected) {
+      try {
+        console.log('💾 Saving review to Supabase...');
+        const { error } = await supabase.from('reviews').insert({
+          id: review.id,
+          facility_id: review.facilityId,
+          user_id: review.userId,
+          user_name: review.userName,
+          overall_rating: review.overallRating,
+          cleanliness_rating: review.cleanlinessRating,
+          condition: review.condition,
+          comment: review.comment,
+          created_at: review.createdAt,
+        });
+        
+        if (error) {
+          console.error('❌ Failed to save review to Supabase:', error.message);
+        } else {
+          console.log('✅ Review saved to Supabase successfully');
+        }
+      } catch (error) {
+        console.error('❌ Error saving review to Supabase:', error);
+      }
+    } else {
+      console.log('⚠️ Supabase not connected, review saved to localStorage only');
     }
   };
 

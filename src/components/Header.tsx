@@ -25,15 +25,19 @@ export default function Header() {
     <header className="bg-uoft-blue dark:bg-slate-900 text-white sticky top-0 z-50 shadow-lg border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-4xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-            <Droplets className="w-7 h-7 text-amber-accent" />
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+              <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
+            </div>
             <div>
               <h1 className="text-xl font-black tracking-tight leading-none">UofT Flow</h1>
               <p className="text-xs text-blue-200 dark:text-slate-400 font-medium">Campus facilities finder</p>
             </div>
           </Link>
 
-          <nav className="flex items-center gap-1">
+          {/* Navigation */}
+          <nav className="flex items-center gap-2">
             <Link
               to="/"
               className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
@@ -43,6 +47,7 @@ export default function Header() {
               <Home className="w-4 h-4" />
               <span className="hidden sm:inline">Find</span>
             </Link>
+            
             <div className="relative">
               <button
                 onClick={() => setShowAddMenu(!showAddMenu)}
@@ -74,6 +79,7 @@ export default function Header() {
                 </div>
               )}
             </div>
+
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -139,7 +145,7 @@ export default function Header() {
               href="https://ko-fi.com/uoftflow"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold bg-amber-accent text-uoft-blue-dark hover:bg-amber-light transition-colors"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-boundless-blue text-white hover:bg-boundless-blue-light transition-all hover:scale-105"
             >
               <Heart className="w-4 h-4" />
               <span className="hidden sm:inline">Support</span>

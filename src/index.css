@@ -1,20 +1,98 @@
 @import "tailwindcss";
 
+/* ============================================
+   UofT Flow - Apple Design System
+   Official UofT Colors + Apple Design Principles
+   ============================================ */
+
 @theme {
-  --color-uoft-blue: #002a5c;
-  --color-uoft-blue-light: #003d82;
-  --color-uoft-blue-dark: #001a3d;
-  --color-amber-accent: #f5a623;
-  --color-amber-light: #ffd580;
-  --color-amber-dark: #d48b0f;
-  --color-clean-green: #22c55e;
-  --color-warn-orange: #f97316;
-  --color-bad-red: #ef4444;
-  --font-family-display: 'Nunito', sans-serif;
+  /* Official UofT Brand Colors */
+  --color-uoft-blue: #1E3765;
+  --color-uoft-blue-light: #2A4A7F;
+  --color-uoft-blue-dark: #142647;
+  --color-boundless-blue: #007FA3;
+  --color-boundless-blue-light: #00A5CC;
+  --color-uoft-white: #FFFFFF;
+  --color-uoft-gray: #6E6E73;
+  --color-uoft-light-gray: #F5F5F7;
+  
+  /* Semantic Colors */
+  --color-success: #34C759;
+  --color-warning: #FF9500;
+  --color-error: #FF3B30;
+  --color-info: #007AFF;
+  
+  --font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
-  font-family: 'Nunito', sans-serif;
+  font-family: var(--font-family-text);
+}
+
+/* Apple-style smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Light theme (default) */
+:root, :root.light {
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F5F5F7;
+  --bg-tertiary: #E8E8ED;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --text-primary: #1D1D1F;
+  --text-secondary: #6E6E73;
+  --text-tertiary: #86868B;
+  --text-muted: #AEAEB2;
+  --border-primary: rgba(0, 0, 0, 0.08);
+  --border-secondary: rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.16);
+}
+
+/* Dark theme */
+:root.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #1C1C1E;
+  --bg-tertiary: #2C2C2E;
+  --bg-card: #1C1C1E;
+  --bg-elevated: #2C2C2E;
+  --text-primary: #F5F5F7;
+  --text-secondary: #A1A1A6;
+  --text-tertiary: #6E6E73;
+  --text-muted: #48484A;
+  --border-primary: rgba(255, 255, 255, 0.08);
+  --border-secondary: rgba(255, 255, 255, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* High contrast mode */
+:root.contrast-high {
+  --text-primary: #000000;
+  --text-secondary: #1D1D1F;
+  --border-primary: #000000;
+  --border-secondary: #000000;
+}
+
+:root.dark.contrast-high {
+  --text-primary: #FFFFFF;
+  --text-secondary: #F5F5F7;
+  --border-primary: #FFFFFF;
+  --border-secondary: #FFFFFF;
+}
+
+/* Font sizes */
+:root.font-small {
+  font-size: 14px;
 }
 
 /* Light theme (default) */
@@ -284,18 +362,18 @@ body {
 
 .cleanliness-fill {
   height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease;
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Animations */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  50% { transform: translateY(-6px); }
 }
 
 .float-animation {
-  animation: float 3s ease-in-out infinite;
+  animation: float 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes pulse-soft {
@@ -304,7 +382,75 @@ body {
 }
 
 .pulse-soft {
-  animation: pulse-soft 2s ease-in-out infinite;
+  animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slide-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fade-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .card {
+    padding: 20px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, select, textarea {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism effect for overlays */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+:root.dark .glass {
+  background: rgba(28, 28, 30, 0.7);
 }
 
 @keyframes slide-in {

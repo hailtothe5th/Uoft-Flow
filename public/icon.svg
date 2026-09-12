@@ -1,0 +1,24 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3765;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2A4A7F;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGradient)"/>
+  
+  <!-- Location pin -->
+  <g transform="translate(256, 200)">
+    <path d="M 0,-80 C -44,-80 -80,-44 -80,0 C -80,44 0,120 0,120 C 0,120 80,44 80,0 C 80,-44 44,-80 0,-80 Z" 
+          fill="#FFFFFF" opacity="0.95"/>
+    <circle cx="0" cy="0" r="32" fill="#1E3765"/>
+  </g>
+  
+  <!-- Water droplet -->
+  <g transform="translate(256, 320)">
+    <path d="M 0,-40 C -20,-20 -32,0 -32,20 C -32,37.7 -17.7,52 0,52 C 17.7,52 32,37.7 32,20 C 32,0 20,-20 0,-40 Z" 
+          fill="#007FA3" opacity="0.9"/>
+  </g>
+</svg>

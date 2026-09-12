@@ -21,10 +21,10 @@ export default function Footer() {
               href="https://ko-fi.com/uoftflow"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 px-3 py-1.5 bg-amber-accent text-uoft-blue-dark rounded-lg font-bold text-xs hover:bg-amber-light transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-boundless-blue text-white rounded-xl font-medium text-sm hover:bg-boundless-blue-light transition-all hover:scale-105"
             >
-              <Heart className="w-3 h-3" />
-              Support us on Ko-fi
+              <Heart className="w-4 h-4" />
+              Support
             </a>
           </div>
         </div>

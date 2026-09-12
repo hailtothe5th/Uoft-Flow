@@ -12,12 +12,12 @@ interface FacilityCardProps {
 export default memo(function FacilityCard({ facility }: FacilityCardProps) {
   const cleanlinessColor =
     facility.avgCleanliness >= 4
-      ? 'bg-clean-green'
+      ? 'bg-success'
       : facility.avgCleanliness >= 3
-      ? 'bg-amber-accent'
+      ? 'bg-warning'
       : facility.avgCleanliness >= 2
-      ? 'bg-warn-orange'
-      : 'bg-bad-red';
+      ? 'bg-warning'
+      : 'bg-error';
 
   const cleanlinessWidth = (facility.avgCleanliness / 5) * 100;
 
@@ -26,7 +26,7 @@ export default memo(function FacilityCard({ facility }: FacilityCardProps) {
       to={`/facility/${facility.id}`}
       className="block bg-white dark:bg-slate-800 rounded-2xl p-4 card-shadow card-shadow-hover transition-all duration-200 border border-blue-100/50 dark:border-slate-700"
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">{facility.type === 'toilet' ? '🚻' : '🚰'}</span>
@@ -39,7 +39,8 @@ export default memo(function FacilityCard({ facility }: FacilityCardProps) {
             {facility.building} • {facility.floorNote}
           </p>
 
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+          {/* Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
             {facility.genderDesignation && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-900/30 text-uoft-blue dark:text-blue-300">
                 {facility.genderDesignation}
@@ -81,7 +82,7 @@ export default memo(function FacilityCard({ facility }: FacilityCardProps) {
         </div>
 
         {/* Right side: rating and distance */}
-        <div className="flex flex-col items-end gap-1 shrink-0">
+        <div className="flex flex-col items-end gap-2 shrink-0">
           {facility.avgRating > 0 && (
             <RatingDisplay rating={facility.avgRating} type={facility.type} size="sm" />
           )}
