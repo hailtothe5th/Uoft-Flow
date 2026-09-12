@@ -15,7 +15,6 @@ interface DataContextType {
   locationError: string | null;
   requestLocation: () => void;
   isLoading: boolean;
-  supabaseConnected: boolean;
 }
 
 const DataContext = createContext<DataContextType>({
@@ -29,7 +28,6 @@ const DataContext = createContext<DataContextType>({
   locationError: null,
   requestLocation: () => {},
   isLoading: true,
-  supabaseConnected: false,
 });
 
 export function DataProvider({ children }: { children: ReactNode }) {
@@ -38,15 +36,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [supabaseConnected, setSupabaseConnected] = useState(false);
 
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
-    let supabaseAvailable = false;
-
     try {
       // Try to load from Supabase
       const { data: supabaseFacilities, error: facilitiesError } = await supabase
@@ -57,25 +52,34 @@ export function DataProvider({ children }: { children: ReactNode }) {
         .from('reviews')
         .select('*');
 
-      // Check if tables exist (404 = table not found)
-      if (facilitiesError?.code === '42P01' || facilitiesError?.message?.includes('does not exist')) {
-        console.warn('Supabase tables not found. Run supabase/schema.sql in your Supabase SQL Editor.');
-        supabaseAvailable = false;
-      } else if (!facilitiesError && supabaseFacilities) {
-        supabaseAvailable = true;
+      if (!facilitiesError && supabaseFacilities && supabaseFacilities.length > 0) {
         setFacilities(supabaseFacilities.map(mapSupabaseFacility));
+      } else {
+        // Fallback to localStorage or seed data
+        const storedFacilities = localStorage.getItem('uoftflow_facilities');
+        if (storedFacilities) {
+          setFacilities(JSON.parse(storedFacilities));
+        } else {
+          setFacilities(seedFacilities);
+          localStorage.setItem('uoftflow_facilities', JSON.stringify(seedFacilities));
+        }
       }
 
-      if (!reviewsError && supabaseReviews) {
+      if (!reviewsError && supabaseReviews && supabaseReviews.length > 0) {
         setReviews(supabaseReviews.map(mapSupabaseReview));
+      } else {
+        // Fallback to localStorage or seed data
+        const storedReviews = localStorage.getItem('uoftflow_reviews');
+        if (storedReviews) {
+          setReviews(JSON.parse(storedReviews));
+        } else {
+          setReviews(seedReviews);
+          localStorage.setItem('uoftflow_reviews', JSON.stringify(seedReviews));
+        }
       }
     } catch (error) {
-      console.warn('Failed to load from Supabase:', error);
-      supabaseAvailable = false;
-    }
-
-    // Fallback to localStorage or seed data if Supabase unavailable
-    if (!supabaseAvailable) {
+      console.warn('Failed to load from Supabase, using fallback:', error);
+      // Fallback to localStorage or seed data
       const storedFacilities = localStorage.getItem('uoftflow_facilities');
       const storedReviews = localStorage.getItem('uoftflow_reviews');
 
@@ -94,7 +98,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    setSupabaseConnected(supabaseAvailable);
     setIsLoading(false);
   };
 
@@ -230,7 +233,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
         locationError,
         requestLocation,
         isLoading,
-        supabaseConnected,
       }}
     >
       {children}
