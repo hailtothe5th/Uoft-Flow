@@ -326,7 +326,7 @@ export default function Home() {
               Sign in to add new locations and leave reviews
             </p>
             <Link
-              to="/auth"
+              to="/login"
               className="inline-flex items-center gap-1 px-4 py-2 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold text-sm hover:bg-amber-light transition-colors"
             >
               Sign in to contribute

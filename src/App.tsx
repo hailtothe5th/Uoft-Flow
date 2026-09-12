@@ -12,7 +12,11 @@ const Home = lazy(() => import('./pages/Home'));
 const FacilityPage = lazy(() => import('./pages/FacilityPage'));
 const SubmitReview = lazy(() => import('./pages/SubmitReview'));
 const AddLocation = lazy(() => import('./pages/AddLocation'));
-const Auth = lazy(() => import('./pages/Auth'));
+const Login = lazy(() => import('./pages/Login'));
+const Signup = lazy(() => import('./pages/Signup'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const UpdatePassword = lazy(() => import('./pages/UpdatePassword'));
+const ChangePassword = lazy(() => import('./pages/ChangePassword'));
 const Terms = lazy(() => import('./pages/Terms'));
 
 // Loading fallback component
@@ -46,17 +50,20 @@ function App() {
             <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-900 transition-colors">
               <Header />
               <main id="main-content" className="flex-1" tabIndex={-1}>
-                <Suspense fallback={<PageLoader />}>
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/facility/:id" element={<FacilityPage />} />
-                    <Route path="/submit" element={<SubmitReview />} />
-                    <Route path="/add" element={<AddLocation />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/terms" element={<Terms />} />
-                  </Routes>
-                </Suspense>
-              </main>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/facility/:id" element={<FacilityPage />} />
+                  <Route path="/submit" element={<SubmitReview />} />
+                  <Route path="/add" element={<AddLocation />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/update-password" element={<UpdatePassword />} />
+                  <Route path="/change-password" element={<ChangePassword />} />
+                  <Route path="/terms" element={<Terms />} />
+                </Routes>
+              </Suspense>              </main>
               <Footer />
             </div>
           </DataProvider>

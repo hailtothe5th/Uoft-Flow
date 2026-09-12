@@ -28,7 +28,7 @@ export default function SubmitReview() {
         <p className="text-xl font-bold text-uoft-blue mb-2">Sign in required</p>
         <p className="text-gray-500 mb-4">You need to sign in to submit a review</p>
         <Link
-          to="/auth"
+          to="/login"
           className="inline-flex items-center gap-2 px-6 py-3 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold hover:bg-amber-light transition-colors"
         >
           Sign In
