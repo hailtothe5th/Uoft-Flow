@@ -62,31 +62,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadUserProfile = async (userId: string, email: string) => {
+    console.log('🔍 Loading user profile for:', userId, email);
+    
     // Try to load profile from Supabase
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from('profiles')
       .select('display_name')
       .eq('id', userId)
       .single();
 
-    const displayName = profile?.display_name || email.split('@')[0] || 'Student';
-    const appUser: User = { id: userId, email, displayName };
-    setUser(appUser);
-    localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
+    console.log('📋 Profile query result:', { profile, error });
+
+    // If profile doesn't exist, create it
+    if (error || !profile) {
+      console.log('⚠️ Profile not found, creating new profile...');
+      const displayName = email.split('@')[0] || 'Student';
+      const { error: insertError } = await supabase
+        .from('profiles')
+        .insert({
+          id: userId,
+          email: email,
+          display_name: displayName,
+        });
+      
+      if (insertError) {
+        console.error('❌ Failed to create profile:', insertError);
+      } else {
+        console.log('✅ Profile created successfully');
+      }
+      
+      const appUser: User = { id: userId, email, displayName };
+      setUser(appUser);
+      localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
+    } else {
+      const displayName = profile.display_name || email.split('@')[0] || 'Student';
+      const appUser: User = { id: userId, email, displayName };
+      setUser(appUser);
+      localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
+      console.log('✅ User profile loaded:', appUser);
+    }
   };
 
   const signIn = async (email: string, password: string) => {
+    console.log('🔐 Attempting to sign in:', email);
+    
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
+    console.log('🔑 Sign in result:', { data, error });
+
     if (error) {
+      console.error('❌ Sign in error:', error);
       throw error;
     }
 
     if (data.user) {
+      console.log('✅ User authenticated, loading profile...');
       await loadUserProfile(data.user.id, data.user.email || email);
+    } else {
+      console.error('❌ No user data returned from sign in');
+      throw new Error('Sign in failed: No user data returned');
     }
   };
 
