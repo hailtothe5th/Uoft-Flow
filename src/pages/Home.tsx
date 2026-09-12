@@ -72,7 +72,7 @@ export default function Home() {
       {!isLoading && !supabaseConnected && <SetupBanner />}
 
       {/* Location status */}
-      <div className="mb-4 sm:mb-8">
+      <div className="mb-8">
         {userLocation ? (
           <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border border-green-200 dark:border-green-800">
             <Navigation className="w-3 h-3 sm:w-4 sm:h-4" />
