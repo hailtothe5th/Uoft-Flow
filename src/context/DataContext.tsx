@@ -253,47 +253,81 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const addReview = async (review: Review) => {
+    console.log('🔍 addReview called with:', review);
+    console.log('🔍 User object:', user);
+    console.log('🔍 isAuthenticated:', isAuthenticated);
+    
     // Update local state immediately for responsive UI
     const updated = [...reviews, review];
     setReviews(updated);
     localStorage.setItem('uoftflow_reviews', JSON.stringify(updated));
 
-    // Always try to save to Supabase if user is authenticated
-    if (isAuthenticated) {
-      try {
-        console.log('💾 Saving review to Supabase...');
-        const { error } = await supabase.from('reviews').insert({
-          id: review.id,
-          facility_id: review.facilityId,
-          user_id: review.userId,
-          user_name: review.userName,
-          overall_rating: review.overallRating,
-          cleanliness_rating: review.cleanlinessRating,
-          condition: review.condition,
-          comment: review.comment,
-          created_at: review.createdAt,
-        });
+    // Check if user is actually authenticated
+    const response = await supabase.auth.getSession();
+    const session = response?.data?.session ?? null;
+    console.log('🔍 Supabase session:', session);
+    console.log('🔍 Supabase user:', session?.user);
+
+    if (!session?.user) {
+      console.error('❌ No active Supabase session. Please sign in again.');
+      alert('You are not signed in. Please sign in and try again.');
+      return;
+    }
+
+    try {
+      console.log('💾 Saving review to Supabase...');
+      console.log('💾 Data being sent:', {
+        id: review.id,
+        facility_id: review.facilityId,
+        user_id: session.user.id,
+        user_name: review.userName,
+        overall_rating: review.overallRating,
+        cleanliness_rating: review.cleanlinessRating,
+        condition: review.condition,
+        comment: review.comment,
+        created_at: review.createdAt,
+      });
+      
+      const result = await supabase.from('reviews').insert({
+        id: review.id,
+        facility_id: review.facilityId,
+        user_id: session.user.id,
+        user_name: review.userName,
+        overall_rating: review.overallRating,
+        cleanliness_rating: review.cleanlinessRating,
+        condition: review.condition,
+        comment: review.comment,
+        created_at: review.createdAt,
+      }).select();
+      
+      const { data, error } = result;
+
+      console.log('💾 Supabase response - data:', data);
+      console.log('💾 Supabase response - error:', error);
+      
+      if (error) {
+        console.error('❌ Failed to save review to Supabase:', error);
+        console.error('❌ Error code:', error.code);
+        console.error('❌ Error details:', error.details);
+        console.error('❌ Error hint:', error.hint);
         
-        if (error) {
-          console.error('❌ Failed to save review to Supabase:', error.message);
-          console.error('Error details:', error);
-          // Show user-friendly error
-          if (error.message.includes('duplicate key') || error.code === '23505') {
-            alert('This review already exists. Please refresh the page.');
-          } else if (error.message.includes('violates row-level security') || error.code === '42501') {
-            alert('Permission denied. Please sign in again and try.');
-          } else {
-            alert(`Failed to save review: ${error.message}`);
-          }
+        if (error.code === '23505') {
+          alert('This review already exists. Please refresh the page.');
+        } else if (error.code === '42501' || error.message.includes('row-level security')) {
+          alert('Permission denied. The database security policies may need to be updated.');
+        } else if (error.code === '42P01') {
+          alert('Database table does not exist. Please run the schema SQL first.');
         } else {
-          console.log('✅ Review saved to Supabase successfully');
+          alert(`Failed to save review: ${error.message}\n\nCheck browser console for details.`);
         }
-      } catch (error: any) {
-        console.error('❌ Error saving review to Supabase:', error);
-        alert(`Error saving review: ${error.message || 'Unknown error'}`);
+      } else {
+        console.log('✅ Review saved to Supabase successfully!');
+        console.log('✅ Saved review:', data);
       }
-    } else {
-      console.log('⚠️ User not authenticated, review saved to localStorage only');
+    } catch (error: any) {
+      console.error('❌ Exception while saving review:', error);
+      console.error('❌ Error stack:', error.stack);
+      alert(`Error saving review: ${error.message || 'Unknown error'}\n\nCheck browser console for details.`);
     }
   };
 
