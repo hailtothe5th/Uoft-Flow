@@ -67,15 +67,15 @@ export default function Home() {
   const nearestFacility = filteredAndSorted[0];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
       {/* Setup banner */}
       {!isLoading && !supabaseConnected && <SetupBanner />}
 
       {/* Location status */}
       <div className="mb-8">
         {userLocation ? (
-          <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-4 py-3 rounded-xl border border-green-200 dark:border-green-800">
-            <Navigation className="w-4 h-4" />
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border border-green-200 dark:border-green-800">
+            <Navigation className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="font-medium">📍 Showing facilities near you</span>
           </div>
         ) : locationError ? (

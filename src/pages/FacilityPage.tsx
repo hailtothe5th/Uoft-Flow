@@ -70,25 +70,25 @@ export default function FacilityPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
       {/* Back button */}
       <button
         onClick={() => navigate(-1)}
-        className="flex items-center gap-1 text-sm text-gray-500 dark:text-slate-400 hover:text-uoft-blue dark:hover:text-white font-semibold mb-4 transition-colors"
+        className="flex items-center gap-1 text-sm text-gray-500 dark:text-slate-400 hover:text-uoft-blue dark:hover:text-white font-semibold mb-3 sm:mb-4 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Back
       </button>
 
       {/* Facility header */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 card-shadow border border-blue-100 dark:border-slate-700 mb-6">
-        <div className="flex items-start gap-4">
-          <span className="text-5xl">{facility.type === 'toilet' ? '🚻' : '🚰'}</span>
-          <div className="flex-1">
-            <h1 className="text-xl sm:text-2xl font-black text-uoft-blue dark:text-white mb-1">{facility.name}</h1>
-            <p className="text-sm text-gray-500 dark:text-slate-400 flex items-center gap-1">
-              <MapPin className="w-4 h-4" />
-              {facility.building} • {facility.floorNote}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 card-shadow border border-blue-100 dark:border-slate-700 mb-4 sm:mb-6">
+        <div className="flex items-start gap-3 sm:gap-4">
+          <span className="text-4xl sm:text-5xl">{facility.type === 'toilet' ? '🚻' : '🚰'}</span>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-black text-uoft-blue dark:text-white mb-1 break-words">{facility.name}</h1>
+            <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 flex items-center gap-1 flex-wrap">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="break-words">{facility.building} • {facility.floorNote}</span>
             </p>
 
             {/* Tags */}
@@ -121,37 +121,37 @@ export default function FacilityPage() {
         </div>
 
         {/* Stats */}
-        <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="text-center p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Overall Rating</p>
+        <div className="mt-4 sm:mt-6 grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+          <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Overall Rating</p>
             {facility.avgRating > 0 ? (
-              <RatingDisplay rating={facility.avgRating} type={facility.type} size="md" />
+              <RatingDisplay rating={facility.avgRating} type={facility.type} size="sm" />
             ) : (
-              <p className="text-lg text-gray-400 dark:text-slate-500">—</p>
+              <p className="text-base sm:text-lg text-gray-400 dark:text-slate-500">—</p>
             )}
           </div>
-          <div className="text-center p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Cleanliness</p>
-            <p className={`text-2xl font-black ${cleanlinessColor}`}>
+          <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Cleanliness</p>
+            <p className={`text-xl sm:text-2xl font-black ${cleanlinessColor}`}>
               {facility.avgCleanliness > 0 ? facility.avgCleanliness.toFixed(1) : '—'}
-              <span className="text-sm text-gray-400 dark:text-slate-500">/5</span>
+              <span className="text-xs sm:text-sm text-gray-400 dark:text-slate-500">/5</span>
             </p>
           </div>
-          <div className="text-center p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Reviews</p>
-            <p className="text-2xl font-black text-uoft-blue dark:text-white">{facility.reviewCount}</p>
+          <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Reviews</p>
+            <p className="text-xl sm:text-2xl font-black text-uoft-blue dark:text-white">{facility.reviewCount}</p>
           </div>
-          <div className="text-center p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
-            <p className="text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Distance</p>
+          <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
+            <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">Distance</p>
             {facility.distance !== undefined ? (
               <>
-                <p className="text-lg font-black text-uoft-blue dark:text-white">
+                <p className="text-sm sm:text-lg font-black text-uoft-blue dark:text-white">
                   {formatDistance(facility.distance)}
                 </p>
-                <p className="text-xs text-gray-400 dark:text-slate-500">{estimateWalkingTime(facility.distance)}</p>
+                <p className="text-[10px] sm:text-xs text-gray-400 dark:text-slate-500">{estimateWalkingTime(facility.distance)}</p>
               </>
             ) : (
-              <p className="text-lg text-gray-400 dark:text-slate-500">—</p>
+              <p className="text-base sm:text-lg text-gray-400 dark:text-slate-500">—</p>
             )}
           </div>
         </div>

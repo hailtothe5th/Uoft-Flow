@@ -50,12 +50,13 @@ export default function MapView({ lat, lng, name, building, floorNote, type }: M
         </p>
       </div>
 
-      <div className="relative" style={{ height: '400px' }}>
+      <div className="relative h-64 sm:h-80 md:h-96">
         <MapContainer
           center={[lat, lng]}
           zoom={17}
           style={{ height: '100%', width: '100%' }}
-          scrollWheelZoom={true}
+          scrollWheelZoom={false}
+          dragging={true}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -74,26 +75,30 @@ export default function MapView({ lat, lng, name, building, floorNote, type }: M
         </MapContainer>
       </div>
 
-      <div className="p-4 border-t border-slate-200 dark:border-slate-700 flex gap-2">
+      <div className="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row gap-2">
         <a
           href={googleMapsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-xl text-sm font-semibold hover:bg-blue-600 transition-colors text-center flex items-center justify-center gap-2"
+          className="flex-1 px-4 py-2.5 bg-uoft-blue text-white rounded-xl text-sm font-semibold hover:bg-uoft-blue-light transition-colors text-center flex items-center justify-center gap-2"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
           </svg>
           Get Directions
         </a>
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-center"
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(`${lat}, ${lng}`);
+            alert('Location copied to clipboard!');
+          }}
+          className="flex-1 px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-center flex items-center justify-center gap-2"
         >
-          Open in Google Maps
-        </a>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          Copy Location
+        </button>
       </div>
     </div>
   );

@@ -20,7 +20,18 @@ export default function Login() {
       await signIn(email, password);
       navigate('/');
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password');
+      console.error('Login error:', err);
+      
+      // Provide helpful error messages
+      if (err.message?.includes('Invalid login credentials')) {
+        setError('Invalid email or password. Please check your credentials or sign up for a new account.');
+      } else if (err.message?.includes('Email not confirmed')) {
+        setError('Please check your email and confirm your account before signing in.');
+      } else if (err.message?.includes('User not found')) {
+        setError('No account found with this email. Please sign up first.');
+      } else {
+        setError(err.message || 'Failed to sign in. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

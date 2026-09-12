@@ -4,6 +4,7 @@ import { seedFacilities, seedReviews } from '../data/seedData';
 import { haversineDistance } from '../utils/distance';
 import { supabase } from '../lib/supabase';
 import { filterReviews } from '../utils/contentFilter';
+import { useAuth } from './AuthContext';
 
 interface DataContextType {
   facilities: Facility[];
@@ -40,6 +41,7 @@ const DataContext = createContext<DataContextType>({
 });
 
 export function DataProvider({ children }: { children: ReactNode }) {
+  const { user, isAuthenticated } = useAuth();
   const [facilities, setFacilities] = useState<Facility[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reports, setReports] = useState<Report[]>([]);
@@ -292,20 +294,33 @@ export function DataProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('uoftflow_reviews', JSON.stringify(updatedReviews));
     }
 
-    // Try to save to Supabase
-    try {
-      await supabase.from('reports').insert({
-        id: report.id,
-        review_id: report.reviewId,
-        reporter_id: report.reporterId,
-        reporter_name: report.reporterName,
-        reason: report.reason,
-        description: report.description,
-        status: report.status,
-        created_at: report.createdAt,
-      });
-    } catch (error) {
-      console.warn('Failed to save report to Supabase:', error);
+    // Try to save to Supabase if user is authenticated
+    if (isAuthenticated) {
+      try {
+        console.log('💾 Saving report to Supabase...');
+        const { error } = await supabase.from('reports').insert({
+          id: report.id,
+          review_id: report.reviewId,
+          reporter_id: report.reporterId,
+          reporter_name: report.reporterName,
+          reason: report.reason,
+          description: report.description,
+          status: report.status,
+          created_at: report.createdAt,
+        });
+        
+        if (error) {
+          console.error('❌ Failed to save report to Supabase:', error.message);
+          alert(`Failed to save report: ${error.message}`);
+        } else {
+          console.log('✅ Report saved to Supabase successfully');
+        }
+      } catch (error: any) {
+        console.error('❌ Error saving report to Supabase:', error);
+        alert(`Error saving report: ${error.message || 'Unknown error'}`);
+      }
+    } else {
+      console.log('⚠️ User not authenticated, report saved to localStorage only');
     }
   };
 
