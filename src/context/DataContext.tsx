@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Facility, Review, FacilityWithStats, Report } from '../types';
 import { seedFacilities, seedReviews } from '../data/seedData';
-import { haversineDistance } from '../utils/distance';
 import { supabase } from '../lib/supabase';
 import { filterReviews } from '../utils/contentFilter';
 import { useAuth } from './AuthContext';
@@ -181,10 +180,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     name: row.name,
     building: row.building,
     floorNote: row.floor_note,
+    address: row.address,
     genderDesignation: row.gender_designation,
     accessible: row.accessible,
-    lat: row.lat,
-    lng: row.lng,
     hasBottleFiller: row.has_bottle_filler,
     hasChilled: row.has_chilled,
     createdAt: row.created_at,
@@ -201,6 +199,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     condition: row.condition,
     comment: row.comment,
     createdAt: row.created_at,
+    hasToiletPaper: row.has_toilet_paper,
+    hasSoap: row.has_soap,
+    hasStallLock: row.has_stall_lock,
   });
 
   const addFacility = async (facility: Facility) => {
@@ -219,10 +220,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
           name: facility.name,
           building: facility.building,
           floor_note: facility.floorNote,
+          address: facility.address,
           gender_designation: facility.genderDesignation,
           accessible: facility.accessible,
-          lat: facility.lat,
-          lng: facility.lng,
           has_bottle_filler: facility.hasBottleFiller,
           has_chilled: facility.hasChilled,
           created_at: facility.createdAt,
@@ -276,6 +276,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         condition: review.condition,
         comment: review.comment,
         created_at: review.createdAt,
+        has_toilet_paper: review.hasToiletPaper,
+        has_soap: review.hasSoap,
+        has_stall_lock: review.hasStallLock,
       });
       
       const result = await supabase.from('reviews').insert({
@@ -288,6 +291,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         condition: review.condition,
         comment: review.comment,
         created_at: review.createdAt,
+        has_toilet_paper: review.hasToiletPaper,
+        has_soap: review.hasSoap,
+        has_stall_lock: review.hasStallLock,
       }).select();
       
       const { data, error } = result;
@@ -402,16 +408,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       facilityReviews.length > 0
         ? facilityReviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / facilityReviews.length
         : 0;
-    const distance = userLocation
-      ? haversineDistance(userLocation.lat, userLocation.lng, f.lat, f.lng)
-      : undefined;
 
     return {
       ...f,
       avgRating,
       avgCleanliness,
       reviewCount: facilityReviews.length,
-      distance,
     };
   });
 

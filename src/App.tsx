@@ -10,8 +10,7 @@ import SkipToContent from './components/SkipToContent';
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'));
 const FacilityPage = lazy(() => import('./pages/FacilityPage'));
-const SubmitReview = lazy(() => import('./pages/SubmitReview'));
-const AddLocation = lazy(() => import('./pages/AddLocation'));
+const Contribute = lazy(() => import('./pages/Contribute'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const AccountChecker = lazy(() => import('./pages/AccountChecker'));
@@ -56,8 +55,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/facility/:id" element={<FacilityPage />} />
-                  <Route path="/submit" element={<SubmitReview />} />
-                  <Route path="/add" element={<AddLocation />} />
+                  <Route path="/contribute" element={<Contribute />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/check-account" element={<AccountChecker />} />

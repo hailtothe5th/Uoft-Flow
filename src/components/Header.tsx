@@ -48,37 +48,15 @@ export default function Header() {
               <span className="hidden sm:inline">Find</span>
             </Link>
             
-            <div className="relative">
-              <button
-                onClick={() => setShowAddMenu(!showAddMenu)}
-                className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                  isActive('/submit') || isActive('/add') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
-                }`}
-              >
-                <PlusCircle className="w-4 h-4" />
-                <span className="hidden sm:inline">Add</span>
-              </button>
-              {showAddMenu && (
-                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-blue-100 dark:border-slate-700 overflow-hidden min-w-[180px] z-50">
-                  <Link
-                    to="/submit"
-                    onClick={() => setShowAddMenu(false)}
-                    className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    Write a Review
-                  </Link>
-                  <Link
-                    to="/add"
-                    onClick={() => setShowAddMenu(false)}
-                    className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors border-t border-blue-50 dark:border-slate-700"
-                  >
-                    <MapPin className="w-4 h-4" />
-                    Add a Location
-                  </Link>
-                </div>
-              )}
-            </div>
+            <Link
+              to="/contribute"
+              className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                isActive('/contribute') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
+              }`}
+            >
+              <PlusCircle className="w-4 h-4" />
+              <span className="hidden sm:inline">Contribute</span>
+            </Link>
 
             {isAuthenticated ? (
               <div className="relative">

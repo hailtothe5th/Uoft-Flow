@@ -10,10 +10,9 @@ export interface Facility {
   name: string;
   building: string;
   floorNote: string;
+  address: string;
   genderDesignation?: GenderDesignation;
   accessible: boolean;
-  lat: number;
-  lng: number;
   hasBottleFiller?: boolean;
   hasChilled?: boolean;
   createdAt: string;
@@ -31,6 +30,10 @@ export interface Review {
   comment: string;
   createdAt: string;
   reportCount?: number;
+  // Toilet-specific amenities (optional, only for toilets)
+  hasToiletPaper?: boolean;
+  hasSoap?: boolean;
+  hasStallLock?: boolean;
 }
 
 export interface Report {
@@ -48,7 +51,6 @@ export interface FacilityWithStats extends Facility {
   avgRating: number;
   avgCleanliness: number;
   reviewCount: number;
-  distance?: number;
 }
 
 export interface User {
@@ -57,5 +59,5 @@ export interface User {
   displayName: string;
 }
 
-export type SortOption = 'distance' | 'cleanliness' | 'rating';
+export type SortOption = 'cleanliness' | 'rating';
 export type FilterType = 'all' | 'toilet' | 'fountain';
