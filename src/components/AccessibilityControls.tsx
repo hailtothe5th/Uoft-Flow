@@ -10,7 +10,7 @@ export default function AccessibilityControls() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+        className="p-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-all"
         aria-label="Accessibility settings"
         aria-expanded={isOpen}
       >
@@ -25,12 +25,12 @@ export default function AccessibilityControls() {
             aria-hidden="true"
           />
           <div 
-            className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 p-6 z-50 slide-in"
+            className="absolute right-0 top-full mt-2 w-80 glass rounded-2xl shadow-[var(--shadow-lg)] border border-[var(--border-primary)] p-6 z-50 slide-in"
             role="dialog"
             aria-label="Accessibility settings"
           >
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-              <Accessibility className="w-5 h-5" />
+            <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+              <Accessibility className="w-5 h-5 text-boundless-blue" />
               Accessibility
             </h2>
 

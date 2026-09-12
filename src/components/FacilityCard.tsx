@@ -12,53 +12,59 @@ interface FacilityCardProps {
 export default memo(function FacilityCard({ facility }: FacilityCardProps) {
   const cleanlinessColor =
     facility.avgCleanliness >= 4
-      ? 'bg-clean-green'
+      ? 'bg-success'
       : facility.avgCleanliness >= 3
-      ? 'bg-amber-accent'
+      ? 'bg-warning'
       : facility.avgCleanliness >= 2
-      ? 'bg-warn-orange'
-      : 'bg-bad-red';
+      ? 'bg-warning'
+      : 'bg-error';
 
   const cleanlinessWidth = (facility.avgCleanliness / 5) * 100;
 
   return (
     <Link
       to={`/facility/${facility.id}`}
-      className="block bg-white dark:bg-slate-800 rounded-2xl p-4 card-shadow card-shadow-hover transition-all duration-200 border border-blue-100/50 dark:border-slate-700"
+      className="block card group hover:scale-[1.01]"
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">{facility.type === 'toilet' ? '🚻' : '🚰'}</span>
-            <h3 className="font-bold text-uoft-blue dark:text-white text-sm sm:text-base truncate">
-              {facility.name}
-            </h3>
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--bg-secondary)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+              {facility.type === 'toilet' ? '🚻' : '🚰'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-[var(--text-primary)] text-base truncate">
+                {facility.name}
+              </h3>
+              <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1.5 mt-0.5">
+                <MapPin className="w-3.5 h-3.5" />
+                {facility.building} • {facility.floorNote}
+              </p>
+            </div>
           </div>
-          <p className="text-xs text-gray-500 dark:text-slate-400 mb-2 flex items-center gap-1">
-            <MapPin className="w-3 h-3" />
-            {facility.building} • {facility.floorNote}
-          </p>
 
-          <div className="flex flex-wrap items-center gap-2 mb-2">
+          {/* Tags */}
+          <div className="flex flex-wrap items-center gap-2 mb-4">
             {facility.genderDesignation && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-900/30 text-uoft-blue dark:text-blue-300">
+              <span className="badge bg-[var(--bg-secondary)] text-[var(--text-secondary)]">
                 {facility.genderDesignation}
               </span>
             )}
             {facility.accessible && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+              <span className="badge badge-success">
                 <Accessibility className="w-3 h-3" />
                 Accessible
               </span>
             )}
             {facility.type === 'fountain' && facility.hasBottleFiller && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300">
+              <span className="badge badge-info">
                 <Droplets className="w-3 h-3" />
                 Bottle filler
               </span>
             )}
             {facility.type === 'fountain' && facility.hasChilled && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300">
+              <span className="badge badge-info">
                 <Thermometer className="w-3 h-3" />
                 Chilled
               </span>
@@ -66,32 +72,32 @@ export default memo(function FacilityCard({ facility }: FacilityCardProps) {
           </div>
 
           {/* Cleanliness bar */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 dark:text-slate-400 font-medium w-16">Clean</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-medium text-[var(--text-secondary)] w-16">Clean</span>
             <div className="cleanliness-bar flex-1">
               <div
                 className={`cleanliness-fill ${cleanlinessColor}`}
                 style={{ width: `${cleanlinessWidth}%` }}
               />
             </div>
-            <span className="text-xs font-bold text-gray-600 dark:text-slate-300 w-8">
+            <span className="text-sm font-semibold text-[var(--text-primary)] w-8">
               {facility.avgCleanliness > 0 ? facility.avgCleanliness.toFixed(1) : '—'}
             </span>
           </div>
         </div>
 
         {/* Right side: rating and distance */}
-        <div className="flex flex-col items-end gap-1 shrink-0">
+        <div className="flex flex-col items-end gap-2 shrink-0">
           {facility.avgRating > 0 && (
             <RatingDisplay rating={facility.avgRating} type={facility.type} size="sm" />
           )}
           {facility.distance !== undefined && (
             <div className="text-right">
-              <p className="text-sm font-bold text-uoft-blue dark:text-white">{formatDistance(facility.distance)}</p>
-              <p className="text-xs text-gray-400 dark:text-slate-500">{estimateWalkingTime(facility.distance)}</p>
+              <p className="text-base font-semibold text-uoft-blue">{formatDistance(facility.distance)}</p>
+              <p className="text-xs text-[var(--text-secondary)]">{estimateWalkingTime(facility.distance)}</p>
             </div>
           )}
-          <p className="text-xs text-gray-400 dark:text-slate-500 mt-1">
+          <p className="text-xs text-[var(--text-tertiary)] mt-1">
             {facility.reviewCount} review{facility.reviewCount !== 1 ? 's' : ''}
           </p>
         </div>

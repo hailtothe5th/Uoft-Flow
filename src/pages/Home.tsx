@@ -67,36 +67,46 @@ export default function Home() {
   const nearestFacility = filteredAndSorted[0];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="max-w-5xl mx-auto px-6 py-12">
       {/* Setup banner */}
       {!isLoading && !supabaseConnected && <SetupBanner />}
 
+      {/* Hero Section */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[var(--text-primary)] mb-3">
+          Find Campus Facilities
+        </h1>
+        <p className="text-lg text-[var(--text-secondary)] max-w-2xl mx-auto">
+          Discover the nearest washrooms and water fountains on the UofT St. George campus
+        </p>
+      </div>
+
       {/* Location status */}
-      <div className="mb-4">
+      <div className="mb-8">
         {userLocation ? (
-          <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-4 py-3 rounded-xl border border-green-200 dark:border-green-800">
+          <div className="flex items-center gap-3 text-sm badge-success px-5 py-3 rounded-2xl">
             <Navigation className="w-4 h-4" />
             <span className="font-medium">📍 Showing facilities near you</span>
           </div>
         ) : locationError ? (
-          <div className="flex items-center justify-between gap-3 text-sm bg-amber-50 dark:bg-amber-900/20 px-4 py-3 rounded-xl border border-amber-200 dark:border-amber-800">
+          <div className="flex items-center justify-between gap-3 text-sm badge-warning px-5 py-3 rounded-2xl">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-              <span className="text-amber-900 dark:text-amber-100">
+              <MapPin className="w-4 h-4" />
+              <span>
                 <span className="font-semibold">Can't access your location</span>
                 <span className="hidden sm:inline"> — showing all facilities</span>
               </span>
             </div>
             <button
               onClick={requestLocation}
-              className="px-3 py-1.5 bg-amber-accent text-uoft-blue-dark rounded-lg text-xs font-bold hover:bg-amber-light transition-colors whitespace-nowrap"
+              className="btn btn-primary text-xs py-2 px-4"
             >
               Enable location
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-800 px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700">
-            <div className="w-4 h-4 border-2 border-gray-300 dark:border-slate-600 border-t-uoft-blue dark:border-t-amber-accent rounded-full animate-spin" />
+          <div className="flex items-center gap-3 text-sm text-[var(--text-secondary)] bg-[var(--bg-secondary)] px-5 py-3 rounded-2xl">
+            <div className="w-4 h-4 border-2 border-[var(--text-muted)] border-t-uoft-blue rounded-full animate-spin" />
             <span>Finding your location...</span>
           </div>
         )}
