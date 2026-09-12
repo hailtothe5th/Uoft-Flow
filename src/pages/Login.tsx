@@ -24,13 +24,11 @@ export default function Login() {
       console.log('✅ Login successful!');
       navigate('/');
     } catch (err: any) {
-      console.error('❌ Login error details:', err);
-      console.error('❌ Error message:', err.message);
-      console.error('❌ Error status:', err.status);
+      console.error('Login error:', err);
       
       // Provide helpful error messages
       if (err.message?.includes('Invalid login credentials')) {
-        setError('Invalid email or password. Please check your credentials or try resetting your password.');
+        setError('Invalid email or password. Please check your credentials or sign up for a new account.');
       } else if (err.message?.includes('Email not confirmed')) {
         setError('Please check your email and confirm your account before signing in.');
       } else if (err.message?.includes('User not found')) {
