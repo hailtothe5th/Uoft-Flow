@@ -64,6 +64,30 @@
   color: var(--color-bad-red);
 }
 
+/* Dark mode select/dropdown fixes */
+:root.dark select,
+:root.dark option {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+}
+
+:root.dark select {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-secondary);
+}
+
+:root.dark select option {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+:root.dark select option:hover,
+:root.dark select option:checked {
+  background-color: var(--color-uoft-blue);
+  color: white;
+}
+
 /* Apple-style smooth scrolling */
 html {
   scroll-behavior: smooth;

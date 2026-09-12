@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Facility, Review, FacilityWithStats, Report } from '../types';
 import { seedFacilities, seedReviews } from '../data/seedData';
-import { haversineDistance } from '../utils/distance';
 import { supabase } from '../lib/supabase';
 import { filterReviews } from '../utils/contentFilter';
 import { useAuth } from './AuthContext';

@@ -259,20 +259,12 @@ export default function Home() {
             <p className="text-sm text-gray-500 dark:text-slate-400 mb-3">
               Add a review or a new location to the campus map
             </p>
-            <div className="flex gap-3 justify-center flex-wrap">
-              <Link
-                to="/submit"
-                className="inline-flex items-center gap-1 px-4 py-2 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold text-sm hover:bg-amber-light transition-colors"
-              >
-                ✍️ Write a Review
-              </Link>
-              <Link
-                to="/add"
-                className="inline-flex items-center gap-1 px-4 py-2 bg-uoft-blue dark:bg-slate-700 text-white rounded-xl font-bold text-sm hover:bg-uoft-blue-light dark:hover:bg-slate-600 transition-colors"
-              >
-                📍 Add a Location
-              </Link>
-            </div>
+            <Link
+              to="/contribute"
+              className="inline-flex items-center gap-1 px-6 py-3 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold text-sm hover:bg-amber-light transition-colors"
+            >
+              ✍️ Contribute Now
+            </Link>
           </>
         ) : (
           <>

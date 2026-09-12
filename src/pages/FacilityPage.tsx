@@ -182,7 +182,7 @@ export default function FacilityPage() {
       {/* Write review CTA */}
       <div className="mb-6">
         <Link
-          to={`/submit?facility=${id}`}
+          to={`/contribute?facility=${id}`}
           className="block w-full bg-amber-accent text-uoft-blue-dark rounded-2xl p-4 text-center font-bold hover:bg-amber-light transition-colors card-shadow"
         >
           ✍️ Write a Review
