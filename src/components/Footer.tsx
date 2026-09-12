@@ -4,17 +4,17 @@ import { Heart, Droplets } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-uoft-blue-dark text-white mt-12">
+    <footer className="bg-uoft-blue-dark dark:bg-slate-950 text-white mt-12 border-t border-slate-800">
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Droplets className="w-5 h-5 text-amber-accent" />
             <span className="font-bold text-sm">UofT Flow</span>
-            <span className="text-xs text-blue-300">— Campus facilities finder</span>
+            <span className="text-xs text-blue-300 dark:text-slate-400">— Campus facilities finder</span>
           </div>
 
           <div className="flex items-center gap-4 text-sm">
-            <Link to="/terms" className="text-blue-200 hover:text-white transition-colors">
+            <Link to="/terms" className="text-blue-200 dark:text-slate-300 hover:text-white transition-colors">
               Terms of Service
             </Link>
             <a
@@ -29,11 +29,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-blue-800 text-center">
-          <p className="text-xs text-blue-300">
+        <div className="mt-6 pt-4 border-t border-blue-800 dark:border-slate-800 text-center">
+          <p className="text-xs text-blue-300 dark:text-slate-400">
             Not affiliated with the University of Toronto. Made with 💩 and 💧 by students, for students.
           </p>
-          <p className="text-xs text-blue-400 mt-1">
+          <p className="text-xs text-blue-400 dark:text-slate-500 mt-1">
             © 2026 UofT Flow. All rights reserved.
           </p>
         </div>

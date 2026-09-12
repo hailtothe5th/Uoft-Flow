@@ -115,9 +115,9 @@ export default function AddLocation() {
         Back
       </button>
 
-      <div className="bg-white rounded-2xl p-6 card-shadow border border-blue-100">
-        <h1 className="text-2xl font-black text-uoft-blue mb-1">Add a New Location 📍</h1>
-        <p className="text-sm text-gray-600 mb-6">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 card-shadow border border-blue-100 dark:border-slate-700">
+        <h1 className="text-2xl font-black text-uoft-blue dark:text-white mb-1">Add a New Location 📍</h1>
+        <p className="text-sm text-gray-600 dark:text-slate-300 mb-6">
           Found a facility we don't have yet? Add it to help other students!
         </p>
 

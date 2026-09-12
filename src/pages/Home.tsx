@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import FacilityCard from '../components/FacilityCard';
+import SetupBanner from '../components/SetupBanner';
 import { FilterType, SortOption, GenderDesignation } from '../types';
 import { MapPin, Navigation, ArrowUpDown, Filter, Search } from 'lucide-react';
 
 export default function Home() {
-  const { facilitiesWithStats, userLocation, locationError, requestLocation } = useData();
+  const { facilitiesWithStats, userLocation, locationError, requestLocation, supabaseConnected, isLoading } = useData();
   const { isAuthenticated } = useAuth();
 
   const [filterType, setFilterType] = useState<FilterType>('all');
@@ -67,18 +68,21 @@ export default function Home() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
+      {/* Setup banner */}
+      {!isLoading && !supabaseConnected && <SetupBanner />}
+
       {/* Location status */}
       <div className="mb-4">
         {userLocation ? (
-          <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-4 py-3 rounded-xl border border-green-200">
+          <div className="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 px-4 py-3 rounded-xl border border-green-200 dark:border-green-800">
             <Navigation className="w-4 h-4" />
             <span className="font-medium">📍 Showing facilities near you</span>
           </div>
         ) : locationError ? (
-          <div className="flex items-center justify-between gap-3 text-sm bg-amber-50 px-4 py-3 rounded-xl border border-amber-200">
+          <div className="flex items-center justify-between gap-3 text-sm bg-amber-50 dark:bg-amber-900/20 px-4 py-3 rounded-xl border border-amber-200 dark:border-amber-800">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-amber-600" />
-              <span className="text-amber-900">
+              <MapPin className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <span className="text-amber-900 dark:text-amber-100">
                 <span className="font-semibold">Can't access your location</span>
                 <span className="hidden sm:inline"> — showing all facilities</span>
               </span>
@@ -91,8 +95,8 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-4 py-3 rounded-xl border border-gray-200">
-            <div className="w-4 h-4 border-2 border-gray-300 border-t-uoft-blue rounded-full animate-spin" />
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-300 bg-gray-50 dark:bg-slate-800 px-4 py-3 rounded-xl border border-gray-200 dark:border-slate-700">
+            <div className="w-4 h-4 border-2 border-gray-300 dark:border-slate-600 border-t-uoft-blue dark:border-t-amber-accent rounded-full animate-spin" />
             <span>Finding your location...</span>
           </div>
         )}
@@ -101,7 +105,7 @@ export default function Home() {
       {/* Nearest facility highlight */}
       {nearestFacility && userLocation && (
         <div className="mb-6">
-          <h2 className="text-sm font-bold text-uoft-blue mb-2 flex items-center gap-1">
+          <h2 className="text-sm font-bold text-uoft-blue dark:text-white mb-2 flex items-center gap-1">
             <span className="text-lg">📍</span> Nearest to you
           </h2>
           <FacilityCard facility={nearestFacility} />
@@ -112,22 +116,25 @@ export default function Home() {
       <div className="mb-4 space-y-3">
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search buildings, floors..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-blue-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+              aria-label="Search facilities"
             />
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
             className={`px-3 py-2.5 rounded-xl border text-sm font-semibold flex items-center gap-1 transition-colors ${
               showFilters
-                ? 'bg-uoft-blue text-white border-uoft-blue'
-                : 'bg-white border-blue-200 text-uoft-blue hover:bg-blue-50'
+                ? 'bg-uoft-blue dark:bg-slate-800 text-white border-uoft-blue dark:border-slate-700'
+                : 'bg-white dark:bg-slate-800 border-blue-200 dark:border-slate-700 text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700'
             }`}
+            aria-expanded={showFilters}
+            aria-controls="filters-panel"
           >
             <Filter className="w-4 h-4" />
             Filters
@@ -135,10 +142,10 @@ export default function Home() {
         </div>
 
         {showFilters && (
-          <div className="bg-white rounded-xl p-4 border border-blue-100 card-shadow space-y-3">
+          <div id="filters-panel" className="bg-white dark:bg-slate-800 rounded-xl p-4 border border-blue-100 dark:border-slate-700 card-shadow space-y-3">
             {/* Type filter */}
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Type</label>
+              <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">Type</label>
               <div className="flex gap-2 mt-1">
                 {[
                   { value: 'all', label: 'All', emoji: '🏛️' },
@@ -150,8 +157,8 @@ export default function Home() {
                     onClick={() => setFilterType(opt.value as FilterType)}
                     className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
                       filterType === opt.value
-                        ? 'bg-uoft-blue text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? 'bg-uoft-blue dark:bg-slate-700 text-white'
+                        : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'
                     }`}
                   >
                     {opt.emoji} {opt.label}
@@ -163,7 +170,7 @@ export default function Home() {
             {/* Gender filter (only for toilets) */}
             {(filterType === 'all' || filterType === 'toilet') && (
               <div>
-                <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+                <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                   Gender Designation
                 </label>
                 <div className="flex gap-2 mt-1 flex-wrap">
@@ -178,8 +185,8 @@ export default function Home() {
                       onClick={() => setGenderFilter(opt.value as GenderDesignation | '')}
                       className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
                         genderFilter === opt.value
-                          ? 'bg-uoft-blue text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          ? 'bg-uoft-blue dark:bg-slate-700 text-white'
+                          : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'
                       }`}
                     >
                       {opt.label}
@@ -191,7 +198,7 @@ export default function Home() {
 
             {/* Sort */}
             <div>
-              <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">
+              <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
                 Sort by
               </label>
               <div className="flex gap-2 mt-1">
@@ -206,7 +213,7 @@ export default function Home() {
                     className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
                       sortBy === opt.value
                         ? 'bg-amber-accent text-uoft-blue-dark'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'
                     }`}
                   >
                     {opt.label}
@@ -219,7 +226,7 @@ export default function Home() {
 
         {/* Quick sort buttons */}
         <div className="flex items-center gap-2">
-          <ArrowUpDown className="w-4 h-4 text-gray-400" />
+          <ArrowUpDown className="w-4 h-4 text-gray-400 dark:text-slate-500" />
           <div className="flex gap-1">
             {[
               { value: 'distance', label: 'Distance' },
@@ -231,15 +238,15 @@ export default function Home() {
                 onClick={() => setSortBy(opt.value as SortOption)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-colors ${
                   sortBy === opt.value
-                    ? 'bg-uoft-blue text-white'
-                    : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-200'
+                    ? 'bg-uoft-blue dark:bg-slate-800 text-white'
+                    : 'bg-white dark:bg-slate-800 text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-200 dark:border-slate-700'
                 }`}
               >
                 {opt.label}
               </button>
             ))}
           </div>
-          <span className="text-xs text-gray-400 ml-auto">
+          <span className="text-xs text-gray-400 dark:text-slate-500 ml-auto">
             {filteredAndSorted.length} facilit{filteredAndSorted.length !== 1 ? 'ies' : 'y'}
           </span>
         </div>
@@ -250,22 +257,22 @@ export default function Home() {
         {isLoading ? (
           // Loading skeletons
           Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl p-4 card-shadow border border-blue-100 animate-pulse">
+            <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl p-4 card-shadow border border-blue-100 dark:border-slate-700 animate-pulse">
               <div className="flex items-start gap-3">
-                <div className="w-12 h-12 bg-gray-200 rounded-xl" />
+                <div className="w-12 h-12 bg-gray-200 dark:bg-slate-700 rounded-xl" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-3/4" />
-                  <div className="h-3 bg-gray-200 rounded w-1/2" />
-                  <div className="h-2 bg-gray-200 rounded w-full" />
+                  <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 dark:bg-slate-700 rounded w-1/2" />
+                  <div className="h-2 bg-gray-200 dark:bg-slate-700 rounded w-full" />
                 </div>
               </div>
             </div>
           ))
         ) : filteredAndSorted.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl card-shadow border border-blue-100">
+          <div className="text-center py-16 bg-white dark:bg-slate-800 rounded-2xl card-shadow border border-blue-100 dark:border-slate-700">
             <p className="text-5xl mb-4">🔍</p>
-            <p className="text-lg font-bold text-uoft-blue mb-2">No facilities found</p>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-lg font-bold text-uoft-blue dark:text-white mb-2">No facilities found</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mb-4">
               {searchQuery
                 ? `No results for "${searchQuery}"`
                 : "Try adjusting your filters or search terms"}
@@ -277,7 +284,7 @@ export default function Home() {
                   setFilterType('all');
                   setGenderFilter('');
                 }}
-                className="px-4 py-2 bg-uoft-blue text-white rounded-xl text-sm font-semibold hover:bg-uoft-blue-light transition-colors"
+                className="px-4 py-2 bg-uoft-blue dark:bg-slate-700 text-white rounded-xl text-sm font-semibold hover:bg-uoft-blue-light dark:hover:bg-slate-600 transition-colors"
               >
                 Clear all filters
               </button>
@@ -289,12 +296,12 @@ export default function Home() {
       </div>
 
       {/* Add CTA */}
-      <div className="mt-8 text-center bg-white rounded-2xl p-6 card-shadow border border-blue-100">
+      <div className="mt-8 text-center bg-white dark:bg-slate-800 rounded-2xl p-6 card-shadow border border-blue-100 dark:border-slate-700">
         <p className="text-2xl mb-2">🚻</p>
         {isAuthenticated ? (
           <>
-            <p className="font-bold text-uoft-blue">Help your fellow students!</p>
-            <p className="text-sm text-gray-500 mb-3">
+            <p className="font-bold text-uoft-blue dark:text-white">Help your fellow students!</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mb-3">
               Add a review or a new location to the campus map
             </p>
             <div className="flex gap-3 justify-center flex-wrap">
@@ -306,7 +313,7 @@ export default function Home() {
               </Link>
               <Link
                 to="/add"
-                className="inline-flex items-center gap-1 px-4 py-2 bg-uoft-blue text-white rounded-xl font-bold text-sm hover:bg-uoft-blue-light transition-colors"
+                className="inline-flex items-center gap-1 px-4 py-2 bg-uoft-blue dark:bg-slate-700 text-white rounded-xl font-bold text-sm hover:bg-uoft-blue-light dark:hover:bg-slate-600 transition-colors"
               >
                 📍 Add a Location
               </Link>
@@ -314,8 +321,8 @@ export default function Home() {
           </>
         ) : (
           <>
-            <p className="font-bold text-uoft-blue">Know a facility we're missing?</p>
-            <p className="text-sm text-gray-500 mb-3">
+            <p className="font-bold text-uoft-blue dark:text-white">Know a facility we're missing?</p>
+            <p className="text-sm text-gray-500 dark:text-slate-400 mb-3">
               Sign in to add new locations and leave reviews
             </p>
             <Link

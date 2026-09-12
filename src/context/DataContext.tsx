@@ -15,6 +15,7 @@ interface DataContextType {
   locationError: string | null;
   requestLocation: () => void;
   isLoading: boolean;
+  supabaseConnected: boolean;
 }
 
 const DataContext = createContext<DataContextType>({
@@ -28,6 +29,7 @@ const DataContext = createContext<DataContextType>({
   locationError: null,
   requestLocation: () => {},
   isLoading: true,
+  supabaseConnected: false,
 });
 
 export function DataProvider({ children }: { children: ReactNode }) {
@@ -36,6 +38,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [supabaseConnected, setSupabaseConnected] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -54,6 +57,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
       if (!facilitiesError && supabaseFacilities && supabaseFacilities.length > 0) {
         setFacilities(supabaseFacilities.map(mapSupabaseFacility));
+        setSupabaseConnected(true);
       } else {
         // Fallback to localStorage or seed data
         const storedFacilities = localStorage.getItem('uoftflow_facilities');
@@ -233,6 +237,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         locationError,
         requestLocation,
         isLoading,
+        supabaseConnected,
       }}
     >
       {children}
