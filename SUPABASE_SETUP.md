@@ -6,11 +6,12 @@ This guide explains how to connect the UofT Flow app to your Supabase backend.
 
 The following have been configured in this project:
 
-1. **Supabase client** — `src/lib/supabase.ts` connects to your Supabase instance
-2. **Environment variables** — `.env` contains your Supabase URL and anon key
-3. **Auth integration** — `src/context/AuthContext.tsx` uses Supabase Auth (with localStorage fallback)
-4. **Data integration** — `src/context/DataContext.tsx` reads/writes to Supabase tables (with localStorage fallback)
-5. **Database schema** — `supabase/schema.sql` contains all tables, indexes, RLS policies, and triggers
+1. **Packages installed** — `@supabase/supabase-js` and `@supabase/ssr`
+2. **Supabase client** — `src/lib/supabase.ts` uses `@supabase/ssr`'s `createBrowserClient`
+3. **Environment variables** — `.env` contains your Supabase URL and publishable key
+4. **Auth integration** — `src/context/AuthContext.tsx` uses Supabase Auth (with localStorage fallback)
+5. **Data integration** — `src/context/DataContext.tsx` reads/writes to Supabase tables (with localStorage fallback)
+6. **Database schema** — `supabase/schema.sql` contains all tables, indexes, RLS policies, and triggers
 
 ## 🔧 Setup Steps
 
@@ -55,7 +56,7 @@ The app uses these environment variables (in `.env`):
 
 ```
 VITE_SUPABASE_URL=https://wzjvdwgocqzgdrxjvfir.supabase.co
-VITE_SUPABASE_ANON_KEY=sb_publishable_abUGDALJxY2_MCfkdgobBw_Y6mEk7u9
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_abUGDALJxY2_MCfkdgobBw_Y6mEk7u9
 ```
 
 **Note:** Vite requires the `VITE_` prefix for client-side environment variables.
@@ -112,9 +113,28 @@ The app gracefully falls back to localStorage if:
 
 This means the app works even without Supabase configured — it just won't persist data across devices.
 
-## 📝 Note on API Keys
+## 📝 Architecture Notes
 
-The `SUPABASE_SECRET_KEY` provided is masked (`sb_secret_8EY00•••...`). This key is only needed for **server-side** operations (Edge Functions, backend APIs). For this frontend app, only the publishable/anon key is required.
+### Why `@supabase/ssr` in a Vite app?
+
+The `@supabase/ssr` package provides `createBrowserClient`, which is the recommended way to create a Supabase client in browser-based apps (Vite, React, etc.). It offers better session management than plain `@supabase/supabase-js`.
+
+### Why no server.ts or middleware.ts?
+
+The Next.js-specific files (`utils/supabase/server.ts` and `utils/supabase/middleware.ts`) use Next.js features like:
+- Server Components
+- `cookies()` from `next/headers`
+- `NextRequest` / `NextResponse`
+
+These don't exist in Vite + React. For this project, we only need the browser client, which handles all authentication and data operations client-side.
+
+### If you migrate to Next.js later:
+
+You can add the server client and middleware files from the Next.js Supabase guide. The database schema and RLS policies remain the same.
+
+## 🔐 Note on API Keys
+
+The `SUPABASE_SECRET_KEY` provided is masked (`sb_secret_8EY00•••...`). This key is only needed for **server-side** operations (Edge Functions, backend APIs). For this frontend app, only the publishable key is required.
 
 If you need to build server-side features later:
 1. Get your secret key from Supabase Dashboard → Settings → API Keys
