@@ -106,8 +106,10 @@ export default function Auth() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-uoft-blue mb-3">
             <Droplets className="w-8 h-8 text-amber-accent" />
           </div>
-          <h1 className="text-2xl font-black text-uoft-blue">Welcome to UofT Flow</h1>
-          <p className="text-sm text-gray-500 mt-1">Sign in to contribute reviews and locations</p>
+          <h1 className="text-2xl font-black text-uoft-blue">Hey there! 👋</h1>
+          <p className="text-sm text-gray-600 mt-2">
+            Sign in to share your campus experiences and help fellow students find the best facilities.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

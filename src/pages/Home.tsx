@@ -74,27 +74,30 @@ export default function Home() {
       {/* Location status */}
       <div className="mb-4">
         {userLocation ? (
-          <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-3 py-2 rounded-xl">
+          <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 px-4 py-3 rounded-xl border border-green-200">
             <Navigation className="w-4 h-4" />
-            <span>Location detected — showing nearest facilities</span>
+            <span className="font-medium">📍 Showing facilities near you</span>
           </div>
         ) : locationError ? (
-          <div className="flex items-center justify-between gap-2 text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-xl">
-            <span className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Location unavailable — sorted alphabetically
-            </span>
+          <div className="flex items-center justify-between gap-3 text-sm bg-amber-50 px-4 py-3 rounded-xl border border-amber-200">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-amber-600" />
+              <span className="text-amber-900">
+                <span className="font-semibold">Can't access your location</span>
+                <span className="hidden sm:inline"> — showing all facilities</span>
+              </span>
+            </div>
             <button
               onClick={requestLocation}
-              className="px-2 py-1 bg-amber-accent text-uoft-blue-dark rounded-lg text-xs font-bold hover:bg-amber-light transition-colors"
+              className="px-3 py-1.5 bg-amber-accent text-uoft-blue-dark rounded-lg text-xs font-bold hover:bg-amber-light transition-colors whitespace-nowrap"
             >
-              Try again
+              Enable location
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
+          <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 px-4 py-3 rounded-xl border border-gray-200">
             <div className="w-4 h-4 border-2 border-gray-300 border-t-uoft-blue rounded-full animate-spin" />
-            <span>Detecting your location...</span>
+            <span>Finding your location...</span>
           </div>
         )}
       </div>
@@ -248,11 +251,41 @@ export default function Home() {
 
       {/* Facility list */}
       <div className="space-y-3">
-        {filteredAndSorted.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-4xl mb-3">🔍</p>
-            <p className="text-gray-500 font-semibold">No facilities found</p>
-            <p className="text-sm text-gray-400">Try adjusting your filters or search terms</p>
+        {isLoading ? (
+          // Loading skeletons
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-2xl p-4 card-shadow border border-blue-100 animate-pulse">
+              <div className="flex items-start gap-3">
+                <div className="w-12 h-12 bg-gray-200 rounded-xl" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-3/4" />
+                  <div className="h-3 bg-gray-200 rounded w-1/2" />
+                  <div className="h-2 bg-gray-200 rounded w-full" />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : filteredAndSorted.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-2xl card-shadow border border-blue-100">
+            <p className="text-5xl mb-4">🔍</p>
+            <p className="text-lg font-bold text-uoft-blue mb-2">No facilities found</p>
+            <p className="text-sm text-gray-500 mb-4">
+              {searchQuery
+                ? `No results for "${searchQuery}"`
+                : "Try adjusting your filters or search terms"}
+            </p>
+            {(searchQuery || filterType !== 'all' || genderFilter) && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setFilterType('all');
+                  setGenderFilter('');
+                }}
+                className="px-4 py-2 bg-uoft-blue text-white rounded-xl text-sm font-semibold hover:bg-uoft-blue-light transition-colors"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         ) : (
           filteredAndSorted.map((f) => <FacilityCard key={f.id} facility={f} />)

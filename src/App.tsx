@@ -1,15 +1,38 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { DataProvider } from './context/DataContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Home from './pages/Home';
-import FacilityPage from './pages/FacilityPage';
-import SubmitReview from './pages/SubmitReview';
-import AddLocation from './pages/AddLocation';
-import Auth from './pages/Auth';
-import Terms from './pages/Terms';
+
+// Lazy load pages for better performance
+const Home = lazy(() => import('./pages/Home'));
+const FacilityPage = lazy(() => import('./pages/FacilityPage'));
+const SubmitReview = lazy(() => import('./pages/SubmitReview'));
+const AddLocation = lazy(() => import('./pages/AddLocation'));
+const Auth = lazy(() => import('./pages/Auth'));
+const Terms = lazy(() => import('./pages/Terms'));
+
+// Loading fallback component
+function PageLoader() {
+  return (
+    <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="space-y-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="bg-white rounded-2xl p-4 card-shadow border border-blue-100 animate-pulse">
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 bg-gray-200 rounded-xl" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-200 rounded w-3/4" />
+                <div className="h-3 bg-gray-200 rounded w-1/2" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
@@ -19,14 +42,16 @@ function App() {
           <div className="min-h-screen flex flex-col">
             <Header />
             <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/facility/:id" element={<FacilityPage />} />
-                <Route path="/submit" element={<SubmitReview />} />
-                <Route path="/add" element={<AddLocation />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/terms" element={<Terms />} />
-              </Routes>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/facility/:id" element={<FacilityPage />} />
+                  <Route path="/submit" element={<SubmitReview />} />
+                  <Route path="/add" element={<AddLocation />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/terms" element={<Terms />} />
+                </Routes>
+              </Suspense>
             </main>
             <Footer />
           </div>

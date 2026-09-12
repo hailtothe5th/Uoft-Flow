@@ -103,8 +103,10 @@ export default function SubmitReview() {
       </button>
 
       <div className="bg-white rounded-2xl p-6 card-shadow border border-blue-100">
-        <h1 className="text-2xl font-black text-uoft-blue mb-1">Write a Review</h1>
-        <p className="text-sm text-gray-500 mb-6">Share your experience to help fellow students</p>
+        <h1 className="text-2xl font-black text-uoft-blue mb-1">Share Your Experience ✍️</h1>
+        <p className="text-sm text-gray-600 mb-6">
+          Help your fellow students by rating this facility. Your review makes a difference!
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Facility selection */}

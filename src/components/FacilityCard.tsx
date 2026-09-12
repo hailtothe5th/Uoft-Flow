@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { FacilityWithStats } from '../types';
 import RatingDisplay from './RatingDisplay';
@@ -9,7 +9,7 @@ interface FacilityCardProps {
   facility: FacilityWithStats;
 }
 
-export default function FacilityCard({ facility }: FacilityCardProps) {
+export default memo(function FacilityCard({ facility }: FacilityCardProps) {
   const cleanlinessColor =
     facility.avgCleanliness >= 4
       ? 'bg-clean-green'
@@ -98,4 +98,4 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
       </div>
     </Link>
   );
-}
+});
