@@ -115,7 +115,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
       }
 
       if (supabaseReviews && supabaseReviews.length > 0) {
-        setReviews(supabaseReviews.map(mapSupabaseReview));
+        const mappedReviews = supabaseReviews.map(mapSupabaseReview);
+        console.log('📋 Sample review data:', mappedReviews[0]);
+        console.log('📋 Toilet amenities in first review:', {
+          hasToiletPaper: mappedReviews[0]?.hasToiletPaper,
+          hasSoap: mappedReviews[0]?.hasSoap,
+          hasStallLock: mappedReviews[0]?.hasStallLock,
+        });
+        setReviews(mappedReviews);
       }
 
       setSupabaseConnected(supabaseAvailable);

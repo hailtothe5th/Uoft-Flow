@@ -24,9 +24,18 @@ export default function FacilityPage() {
   const facilityReviews = useMemo(() => {
     if (!id || !getVisibleReviews) return [];
     try {
-      return getVisibleReviews(id).sort((a, b) => 
+      const reviews = getVisibleReviews(id).sort((a, b) => 
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
+      console.log('📋 Facility reviews loaded:', reviews.length);
+      if (reviews.length > 0) {
+        console.log('📋 First review amenities:', {
+          hasToiletPaper: reviews[0].hasToiletPaper,
+          hasSoap: reviews[0].hasSoap,
+          hasStallLock: reviews[0].hasStallLock,
+        });
+      }
+      return reviews;
     } catch (err) {
       console.error('Error getting visible reviews:', err);
       return [];
@@ -260,7 +269,19 @@ export default function FacilityPage() {
                     </div>
 
                     {/* Toilet amenities (only show for toilet reviews) */}
-                    {facility.type === 'toilet' && (review.hasToiletPaper !== undefined || review.hasSoap !== undefined || review.hasStallLock !== undefined) && (
+                    {(() => {
+                      const isToilet = facility.type === 'toilet';
+                      const hasAmenityData = review.hasToiletPaper !== undefined || review.hasSoap !== undefined || review.hasStallLock !== undefined;
+                      console.log('🚻 Rendering review amenities:', {
+                        reviewId: review.id,
+                        isToilet,
+                        hasAmenityData,
+                        hasToiletPaper: review.hasToiletPaper,
+                        hasSoap: review.hasSoap,
+                        hasStallLock: review.hasStallLock,
+                      });
+                      return isToilet && hasAmenityData;
+                    })() && (
                       <div className="flex flex-wrap gap-2 mb-2">
                         {review.hasToiletPaper !== undefined && (
                           <span className={`text-xs px-2 py-1 rounded-full ${
