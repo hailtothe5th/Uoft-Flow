@@ -43,7 +43,7 @@ export default function FacilityPage() {
     facility.avgCleanliness >= 4
       ? 'text-clean-green'
       : facility.avgCleanliness >= 3
-      ? 'text-amber-accent'
+      ? 'text-warn-orange'
       : facility.avgCleanliness >= 2
       ? 'text-warn-orange'
       : 'text-bad-red';
@@ -52,7 +52,7 @@ export default function FacilityPage() {
     facility.avgCleanliness >= 4
       ? 'bg-clean-green'
       : facility.avgCleanliness >= 3
-      ? 'bg-amber-accent'
+      ? 'bg-warn-orange'
       : facility.avgCleanliness >= 2
       ? 'bg-warn-orange'
       : 'bg-bad-red';

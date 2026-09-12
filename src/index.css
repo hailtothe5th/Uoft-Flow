@@ -18,6 +18,7 @@
   --color-uoft-white: #FFFFFF;
   --color-uoft-gray: #6E6E73;
   --color-uoft-light-gray: #F5F5F7;
+  --color-amber-accent: #F5A623;
   
   /* Semantic Colors */
   --color-success: #34C759;
@@ -25,12 +26,42 @@
   --color-error: #FF3B30;
   --color-info: #007AFF;
   
+  /* Cleanliness Rating Colors */
+  --color-clean-green: #34C759;
+  --color-warn-orange: #FF9500;
+  --color-bad-red: #FF3B30;
+  
   --font-family-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-family-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 * {
   font-family: var(--font-family-text);
+}
+
+/* Cleanliness color utilities */
+.bg-clean-green {
+  background-color: var(--color-clean-green);
+}
+
+.bg-warn-orange {
+  background-color: var(--color-warn-orange);
+}
+
+.bg-bad-red {
+  background-color: var(--color-bad-red);
+}
+
+.text-clean-green {
+  color: var(--color-clean-green);
+}
+
+.text-warn-orange {
+  color: var(--color-warn-orange);
+}
+
+.text-bad-red {
+  color: var(--color-bad-red);
 }
 
 /* Apple-style smooth scrolling */
@@ -88,16 +119,22 @@ body {
 /* High contrast mode */
 :root.contrast-high {
   --text-primary: #000000;
-  --text-secondary: #1D1D1F;
+  --text-secondary: #000000;
+  --text-tertiary: #000000;
   --border-primary: #000000;
   --border-secondary: #000000;
+  --bg-card: #FFFFFF;
+  --bg-secondary: #F0F0F0;
 }
 
 :root.dark.contrast-high {
   --text-primary: #FFFFFF;
-  --text-secondary: #F5F5F7;
+  --text-secondary: #FFFFFF;
+  --text-tertiary: #FFFFFF;
   --border-primary: #FFFFFF;
   --border-secondary: #FFFFFF;
+  --bg-card: #000000;
+  --bg-secondary: #1A1A1A;
 }
 
 /* Font sizes */
