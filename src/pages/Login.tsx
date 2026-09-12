@@ -27,15 +27,15 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-6 py-12">
+    <div className="min-h-[calc(100vh-200px)] flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
-        <div className="card p-8">
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl mb-6 overflow-hidden">
-              <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-uoft-blue dark:bg-slate-700 rounded-full mb-4">
+              <LogIn className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight text-[var(--text-primary)] mb-2">Welcome Back</h1>
-            <p className="text-[var(--text-secondary)]">Sign in to your UofT Flow account</p>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Welcome Back</h1>
+            <p className="text-slate-600 dark:text-slate-400">Sign in to your UofT Flow account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -46,17 +46,17 @@ export default function Login() {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input pl-12"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-uoft-blue focus:border-transparent dark:bg-slate-700 dark:text-white"
                   placeholder="you@utoronto.ca"
                   required
                 />
@@ -64,17 +64,17 @@ export default function Login() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)]" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="input pl-12"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-uoft-blue focus:border-transparent dark:bg-slate-700 dark:text-white"
                   placeholder="••••••••"
                   required
                 />
@@ -82,16 +82,16 @@ export default function Login() {
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center cursor-pointer">
+              <label className="flex items-center">
                 <input
                   type="checkbox"
-                  className="w-4 h-4 rounded border-[var(--border-secondary)] text-uoft-blue focus:ring-boundless-blue"
+                  className="w-4 h-4 text-uoft-blue border-slate-300 rounded focus:ring-uoft-blue"
                 />
-                <span className="ml-2 text-sm text-[var(--text-secondary)]">Remember me</span>
+                <span className="ml-2 text-sm text-slate-600 dark:text-slate-400">Remember me</span>
               </label>
               <Link
                 to="/forgot-password"
-                className="text-sm text-boundless-blue hover:underline font-medium"
+                className="text-sm text-uoft-blue dark:text-blue-400 hover:underline"
               >
                 Forgot password?
               </Link>
@@ -100,16 +100,16 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn btn-primary w-full"
+              className="w-full bg-uoft-blue hover:bg-uoft-blue-light text-white font-semibold py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <div className="mt-8 text-center">
-            <p className="text-[var(--text-secondary)]">
+          <div className="mt-6 text-center">
+            <p className="text-slate-600 dark:text-slate-400">
               Don't have an account?{' '}
-              <Link to="/signup" className="text-boundless-blue font-semibold hover:underline">
+              <Link to="/signup" className="text-uoft-blue dark:text-blue-400 font-semibold hover:underline">
                 Sign up
               </Link>
             </p>

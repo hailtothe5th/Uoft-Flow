@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Droplets, Home, PlusCircle, User, LogOut, Heart, MessageSquare, MapPin, Sun, Moon, Key } from 'lucide-react';
+import { Droplets, Home, PlusCircle, User, LogOut, Heart, MessageSquare, MapPin, Sun, Moon, Monitor, Accessibility, Key } from 'lucide-react';
 import AccessibilityControls from './AccessibilityControls';
 
 export default function Header() {
@@ -22,8 +22,8 @@ export default function Header() {
   };
 
   return (
-    <header className="glass sticky top-0 z-50 border-b border-[var(--border-primary)]">
-      <div className="max-w-5xl mx-auto px-6 py-4">
+    <header className="bg-uoft-blue dark:bg-slate-900 text-white sticky top-0 z-50 shadow-lg border-b border-slate-200 dark:border-slate-800">
+      <div className="max-w-4xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
@@ -31,7 +31,8 @@ export default function Header() {
               <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">UofT Flow</h1>
+              <h1 className="text-xl font-black tracking-tight leading-none">UofT Flow</h1>
+              <p className="text-xs text-blue-200 dark:text-slate-400 font-medium">Campus facilities finder</p>
             </div>
           </Link>
 
@@ -39,10 +40,8 @@ export default function Header() {
           <nav className="flex items-center gap-2">
             <Link
               to="/"
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                isActive('/')
-                  ? 'bg-uoft-blue text-white'
-                  : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]'
+              className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                isActive('/') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
               }`}
             >
               <Home className="w-4 h-4" />
@@ -52,37 +51,32 @@ export default function Header() {
             <div className="relative">
               <button
                 onClick={() => setShowAddMenu(!showAddMenu)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  isActive('/submit') || isActive('/add')
-                    ? 'bg-uoft-blue text-white'
-                    : 'text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)]'
+                className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                  isActive('/submit') || isActive('/add') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
                 }`}
               >
                 <PlusCircle className="w-4 h-4" />
                 <span className="hidden sm:inline">Add</span>
               </button>
               {showAddMenu && (
-                <>
-                  <div className="fixed inset-0 z-40" onClick={() => setShowAddMenu(false)} />
-                  <div className="absolute right-0 top-full mt-2 glass rounded-2xl shadow-[var(--shadow-lg)] border border-[var(--border-primary)] overflow-hidden min-w-[200px] z-50 fade-in">
-                    <Link
-                      to="/submit"
-                      onClick={() => setShowAddMenu(false)}
-                      className="flex items-center gap-3 px-5 py-4 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                    >
-                      <MessageSquare className="w-4 h-4 text-boundless-blue" />
-                      Write a Review
-                    </Link>
-                    <Link
-                      to="/add"
-                      onClick={() => setShowAddMenu(false)}
-                      className="flex items-center gap-3 px-5 py-4 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors border-t border-[var(--border-primary)]"
-                    >
-                      <MapPin className="w-4 h-4 text-boundless-blue" />
-                      Add a Location
-                    </Link>
-                  </div>
-                </>
+                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-blue-100 dark:border-slate-700 overflow-hidden min-w-[180px] z-50">
+                  <Link
+                    to="/submit"
+                    onClick={() => setShowAddMenu(false)}
+                    className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Write a Review
+                  </Link>
+                  <Link
+                    to="/add"
+                    onClick={() => setShowAddMenu(false)}
+                    className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors border-t border-blue-50 dark:border-slate-700"
+                  >
+                    <MapPin className="w-4 h-4" />
+                    Add a Location
+                  </Link>
+                </div>
               )}
             </div>
 
@@ -90,43 +84,40 @@ export default function Header() {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-all"
+                  className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800 transition-colors"
                 >
-                  <div className="w-6 h-6 rounded-full bg-boundless-blue flex items-center justify-center">
-                    <span className="text-xs font-semibold text-white">{user?.displayName?.charAt(0).toUpperCase()}</span>
-                  </div>
+                  <User className="w-4 h-4" />
                   <span className="hidden sm:inline">{user?.displayName}</span>
                 </button>
                 {showUserMenu && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setShowUserMenu(false)} />
-                    <div className="absolute right-0 top-full mt-2 glass rounded-2xl shadow-[var(--shadow-lg)] border border-[var(--border-primary)] overflow-hidden min-w-[200px] z-50 fade-in">
-                      <Link
-                        to="/change-password"
-                        onClick={() => setShowUserMenu(false)}
-                        className="flex items-center gap-3 px-5 py-4 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
-                      >
-                        <Key className="w-4 h-4 text-boundless-blue" />
-                        Change Password
-                      </Link>
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          signOut();
-                        }}
-                        className="flex items-center gap-3 px-5 py-4 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] transition-colors w-full text-left border-t border-[var(--border-primary)]"
-                      >
-                        <LogOut className="w-4 h-4 text-error" />
-                        Sign Out
-                      </button>
-                    </div>
-                  </>
+                  <div className="absolute right-0 top-full mt-1 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-blue-100 dark:border-slate-700 overflow-hidden min-w-[180px] z-50">
+                    <Link
+                      to="/change-password"
+                      onClick={() => setShowUserMenu(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors"
+                    >
+                      <Key className="w-4 h-4" />
+                      Change Password
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setShowUserMenu(false);
+                        signOut();
+                      }}
+                      className="flex items-center gap-2 px-4 py-3 text-sm font-semibold text-uoft-blue dark:text-white hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors w-full text-left border-t border-blue-50 dark:border-slate-700"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (
               <Link
                 to="/login"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-uoft-blue text-white hover:bg-uoft-blue-light transition-all hover:scale-105"
+                className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
+                  isActive('/login') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
+                }`}
               >
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Sign In</span>
@@ -136,7 +127,7 @@ export default function Header() {
             {/* Theme toggle */}
             <button
               onClick={cycleTheme}
-              className="p-2.5 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-all"
+              className="p-2 rounded-lg hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800 transition-colors"
               aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
               title={`Current: ${resolvedTheme} mode`}
             >
