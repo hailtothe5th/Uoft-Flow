@@ -4,24 +4,18 @@ import { Heart, Droplets } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="mt-20 border-t border-[var(--border-primary)] bg-[var(--bg-secondary)]">
-      <div className="max-w-5xl mx-auto px-6 py-12">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg overflow-hidden">
-              <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
-            </div>
-            <div>
-              <p className="font-semibold text-[var(--text-primary)]">UofT Flow</p>
-              <p className="text-xs text-[var(--text-secondary)]">Campus facilities finder</p>
-            </div>
+    <footer className="bg-uoft-blue-dark dark:bg-slate-950 text-white mt-12 border-t border-slate-800">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Droplets className="w-5 h-5 text-amber-accent" />
+            <span className="font-bold text-sm">UofT Flow</span>
+            <span className="text-xs text-blue-300 dark:text-slate-400">— Campus facilities finder</span>
           </div>
 
-          {/* Links */}
-          <div className="flex items-center gap-6 text-sm">
-            <Link to="/terms" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-              Terms
+          <div className="flex items-center gap-4 text-sm">
+            <Link to="/terms" className="text-blue-200 dark:text-slate-300 hover:text-white transition-colors">
+              Terms of Service
             </Link>
             <a
               href="https://ko-fi.com/uoftflow"
@@ -35,12 +29,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-8 pt-6 border-t border-[var(--border-primary)] text-center">
-          <p className="text-xs text-[var(--text-tertiary)]">
+        <div className="mt-6 pt-4 border-t border-blue-800 dark:border-slate-800 text-center">
+          <p className="text-xs text-blue-300 dark:text-slate-400">
             Not affiliated with the University of Toronto. Made with 💩 and 💧 by students, for students.
           </p>
-          <p className="text-xs text-[var(--text-muted)] mt-2">
+          <p className="text-xs text-blue-400 dark:text-slate-500 mt-1">
             © 2026 UofT Flow. All rights reserved.
           </p>
         </div>

@@ -101,7 +101,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
       // Set data from Supabase
       if (supabaseFacilities && supabaseFacilities.length > 0) {
         setFacilities(supabaseFacilities.map(mapSupabaseFacility));
-        supabaseAvailable = true;
+        setSupabaseConnected(true);
+      } else {
+        // Fallback to localStorage or seed data
+        const storedFacilities = localStorage.getItem('uoftflow_facilities');
+        if (storedFacilities) {
+          setFacilities(JSON.parse(storedFacilities));
+        } else {
+          setFacilities(seedFacilities);
+          localStorage.setItem('uoftflow_facilities', JSON.stringify(seedFacilities));
+        }
       }
 
       if (supabaseReviews && supabaseReviews.length > 0) {
@@ -112,6 +121,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       
       if (supabaseAvailable) {
         console.log('🎉 Successfully loaded all data from Supabase!');
+      }
+
+      // Load reports from localStorage
+      const storedReports = localStorage.getItem('uoftflow_reports');
+      if (storedReports) {
+        setReports(JSON.parse(storedReports));
       }
     } catch (error) {
       console.warn('⚠️ Supabase not available, using fallback data:', error);
@@ -140,6 +155,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
         setReviews(seedReviews);
         localStorage.setItem('uoftflow_reviews', JSON.stringify(seedReviews));
         console.log('✅ Loaded seed reviews');
+      }
+
+      // Load reports from localStorage
+      const storedReports = localStorage.getItem('uoftflow_reports');
+      if (storedReports) {
+        setReports(JSON.parse(storedReports));
       }
     }
 
@@ -255,7 +276,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
   };
 
   const addReport = async (report: Report) => {
-    // Update local state immediately for responsive UI
     const updated = [...reports, report];
     setReports(updated);
     localStorage.setItem('uoftflow_reports', JSON.stringify(updated));
@@ -272,31 +292,20 @@ export function DataProvider({ children }: { children: ReactNode }) {
       localStorage.setItem('uoftflow_reviews', JSON.stringify(updatedReviews));
     }
 
-    // Try to save to Supabase if connected
-    if (supabaseConnected) {
-      try {
-        console.log('💾 Saving report to Supabase...');
-        const { error } = await supabase.from('reports').insert({
-          id: report.id,
-          review_id: report.reviewId,
-          reporter_id: report.reporterId,
-          reporter_name: report.reporterName,
-          reason: report.reason,
-          description: report.description,
-          status: report.status,
-          created_at: report.createdAt,
-        });
-        
-        if (error) {
-          console.error('❌ Failed to save report to Supabase:', error.message);
-        } else {
-          console.log('✅ Report saved to Supabase successfully');
-        }
-      } catch (error) {
-        console.error('❌ Error saving report to Supabase:', error);
-      }
-    } else {
-      console.log('⚠️ Supabase not connected, report saved to localStorage only');
+    // Try to save to Supabase
+    try {
+      await supabase.from('reports').insert({
+        id: report.id,
+        review_id: report.reviewId,
+        reporter_id: report.reporterId,
+        reporter_name: report.reporterName,
+        reason: report.reason,
+        description: report.description,
+        status: report.status,
+        created_at: report.createdAt,
+      });
+    } catch (error) {
+      console.warn('Failed to save report to Supabase:', error);
     }
   };
 
