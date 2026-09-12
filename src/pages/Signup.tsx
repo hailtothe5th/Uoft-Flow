@@ -12,6 +12,7 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,23 +34,29 @@ export default function Signup() {
     try {
       await signUp(email, password, displayName);
       
-      // Check if email confirmation is required
+      // Check if we have a session (user is signed in)
       const { data } = await supabase.auth.getSession();
       if (data.session) {
         // User is already signed in (email confirmation not required)
         navigate('/');
       } else {
-        // Email confirmation required
-        navigate('/login?message=check-email');
+        // Email confirmation required - show success message
+        setSuccessMessage('Account created! Please check your email to confirm your account, then sign in.');
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
       }
     } catch (err: any) {
       console.error('Signup error:', err);
       
       // Provide helpful error messages
-      if (err.message?.includes('already registered')) {
+      if (err.message?.includes('already registered') || err.message?.includes('already been registered')) {
         setError('An account with this email already exists. Please sign in instead.');
       } else if (err.message?.includes('password')) {
         setError('Password is too weak. Please use at least 6 characters.');
+      } else if (err.message?.includes('check your email')) {
+        setError(err.message);
+        setSuccessMessage('Please check your email inbox (and spam folder) for the confirmation link.');
       } else {
         setError(err.message || 'Failed to create account. Please try again.');
       }
@@ -74,6 +81,12 @@ export default function Signup() {
             {error && (
               <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
                 {error}
+              </div>
+            )}
+
+            {successMessage && (
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-600 dark:text-green-400 px-4 py-3 rounded-lg text-sm">
+                {successMessage}
               </div>
             )}
 

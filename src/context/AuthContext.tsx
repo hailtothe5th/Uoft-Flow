@@ -103,13 +103,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
 
-    // Create profile if user was created
-    if (data.user) {
+    // Check if email confirmation is required
+    if (data.user && !data.session) {
+      // Email confirmation required - user needs to check their email
+      throw new Error('Please check your email to confirm your account before signing in.');
+    }
+
+    // If we have a session, user is already signed in (email confirmation not required)
+    if (data.session && data.user) {
+      // Create profile
       await supabase.from('profiles').upsert({
         id: data.user.id,
         email: data.user.email,
         display_name: displayName,
       });
+      
+      // Set user in context
+      const appUser: User = { 
+        id: data.user.id, 
+        email: data.user.email || email, 
+        displayName 
+      };
+      setUser(appUser);
+      localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
     }
   };
 
