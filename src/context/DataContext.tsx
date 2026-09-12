@@ -199,6 +199,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     condition: row.condition,
     comment: row.comment,
     createdAt: row.created_at,
+    hasToiletPaper: row.has_toilet_paper,
+    hasSoap: row.has_soap,
+    hasStallLock: row.has_stall_lock,
   });
 
   const addFacility = async (facility: Facility) => {
@@ -273,6 +276,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         condition: review.condition,
         comment: review.comment,
         created_at: review.createdAt,
+        has_toilet_paper: review.hasToiletPaper,
+        has_soap: review.hasSoap,
+        has_stall_lock: review.hasStallLock,
       });
       
       const result = await supabase.from('reviews').insert({
@@ -285,6 +291,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         condition: review.condition,
         comment: review.comment,
         created_at: review.createdAt,
+        has_toilet_paper: review.hasToiletPaper,
+        has_soap: review.hasSoap,
+        has_stall_lock: review.hasStallLock,
       }).select();
       
       const { data, error } = result;

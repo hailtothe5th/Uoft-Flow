@@ -38,7 +38,11 @@ CREATE TABLE public.reviews (
   condition TEXT NOT NULL CHECK (condition IN ('Excellent', 'Good', 'Needs attention', 'Out of order')),
   comment TEXT DEFAULT '',
   created_at TIMESTAMPTZ DEFAULT NOW(),
-  report_count INTEGER DEFAULT 0
+  report_count INTEGER DEFAULT 0,
+  -- Toilet-specific amenities (only populated for toilet reviews)
+  has_toilet_paper BOOLEAN,
+  has_soap BOOLEAN,
+  has_stall_lock BOOLEAN
 );
 
 CREATE INDEX idx_facilities_type ON public.facilities(type);

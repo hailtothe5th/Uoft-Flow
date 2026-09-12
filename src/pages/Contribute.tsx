@@ -25,6 +25,11 @@ export default function Contribute() {
   const [cleanlinessRating, setCleanlinessRating] = useState(0);
   const [condition, setCondition] = useState<Condition>('Good');
   const [comment, setComment] = useState('');
+  
+  // Toilet-specific amenities
+  const [hasToiletPaper, setHasToiletPaper] = useState(true);
+  const [hasSoap, setHasSoap] = useState(true);
+  const [hasStallLock, setHasStallLock] = useState(true);
 
   // New facility form state
   const [type, setType] = useState<FacilityType>('toilet');
@@ -117,6 +122,10 @@ export default function Contribute() {
       condition,
       comment,
       createdAt: new Date().toISOString(),
+      // Include toilet amenities if reviewing a toilet
+      hasToiletPaper: selectedFacility?.type === 'toilet' ? hasToiletPaper : undefined,
+      hasSoap: selectedFacility?.type === 'toilet' ? hasSoap : undefined,
+      hasStallLock: selectedFacility?.type === 'toilet' ? hasStallLock : undefined,
     };
 
     addReview(review);
@@ -513,6 +522,51 @@ export default function Contribute() {
                 <option value="Out of order">🚫 Out of order</option>
               </select>
             </div>
+
+            {/* Toilet-specific amenities (only show for toilets) */}
+            {selectedFacility?.type === 'toilet' && (
+              <div className="bg-blue-50 dark:bg-slate-700 rounded-xl p-4 space-y-3">
+                <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-2">
+                  🚻 Toilet Amenities
+                </label>
+                
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasToiletPaper}
+                    onChange={(e) => setHasToiletPaper(e.target.checked)}
+                    className="w-5 h-5 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                  />
+                  <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                    🧻 Toilet paper available
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasSoap}
+                    onChange={(e) => setHasSoap(e.target.checked)}
+                    className="w-5 h-5 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                  />
+                  <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                    🧼 Soap available
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasStallLock}
+                    onChange={(e) => setHasStallLock(e.target.checked)}
+                    className="w-5 h-5 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                  />
+                  <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                    🔒 Lock on stall doors
+                  </span>
+                </label>
+              </div>
+            )}
 
             {/* Comment */}
             <div>

@@ -30,6 +30,10 @@ export interface Review {
   comment: string;
   createdAt: string;
   reportCount?: number;
+  // Toilet-specific amenities (optional, only for toilets)
+  hasToiletPaper?: boolean;
+  hasSoap?: boolean;
+  hasStallLock?: boolean;
 }
 
 export interface Report {

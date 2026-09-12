@@ -3,12 +3,11 @@ import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import FacilityCard from '../components/FacilityCard';
-import SetupBanner from '../components/SetupBanner';
 import { FilterType, SortOption, GenderDesignation } from '../types';
 import { ArrowUpDown, Filter, Search } from 'lucide-react';
 
 export default function Home() {
-  const { facilitiesWithStats, supabaseConnected, isLoading } = useData();
+  const { facilitiesWithStats, isLoading } = useData();
   const { isAuthenticated } = useAuth();
 
   const [filterType, setFilterType] = useState<FilterType>('all');
@@ -56,9 +55,6 @@ export default function Home() {
 
   return (
     <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-      {/* Setup banner */}
-      {!isLoading && !supabaseConnected && <SetupBanner />}
-
       {/* Top rated facility */}
       {topFacility && (
         <div className="mb-6">

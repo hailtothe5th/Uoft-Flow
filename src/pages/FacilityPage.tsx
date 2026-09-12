@@ -250,6 +250,39 @@ export default function FacilityPage() {
                       <span>Cleanliness: <strong>{review.cleanlinessRating}/5</strong></span>
                     </div>
 
+                    {/* Toilet amenities (only show for toilet reviews) */}
+                    {facility.type === 'toilet' && (review.hasToiletPaper !== undefined || review.hasSoap !== undefined || review.hasStallLock !== undefined) && (
+                      <div className="flex flex-wrap gap-2 mb-2">
+                        {review.hasToiletPaper !== undefined && (
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            review.hasToiletPaper 
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
+                              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                          }`}>
+                            {review.hasToiletPaper ? '🧻 Toilet paper' : '🧻 No toilet paper'}
+                          </span>
+                        )}
+                        {review.hasSoap !== undefined && (
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            review.hasSoap 
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
+                              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                          }`}>
+                            {review.hasSoap ? '🧼 Soap' : '🧼 No soap'}
+                          </span>
+                        )}
+                        {review.hasStallLock !== undefined && (
+                          <span className={`text-xs px-2 py-1 rounded-full ${
+                            review.hasStallLock 
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' 
+                              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                          }`}>
+                            {review.hasStallLock ? '🔒 Stall lock' : '🔒 No stall lock'}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
                     {review.comment && (
                       <p className="text-sm text-gray-700 dark:text-slate-300 leading-relaxed">{review.comment}</p>
                     )}
