@@ -28,7 +28,7 @@ export default function SubmitReview() {
         <p className="text-xl font-bold text-uoft-blue mb-2">Sign in required</p>
         <p className="text-gray-500 mb-4">You need to sign in to submit a review</p>
         <Link
-          to="/auth"
+          to="/login"
           className="inline-flex items-center gap-2 px-6 py-3 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold hover:bg-amber-light transition-colors"
         >
           Sign In
@@ -102,9 +102,11 @@ export default function SubmitReview() {
         Back
       </button>
 
-      <div className="bg-white rounded-2xl p-6 card-shadow border border-blue-100">
-        <h1 className="text-2xl font-black text-uoft-blue mb-1">Write a Review</h1>
-        <p className="text-sm text-gray-500 mb-6">Share your experience to help fellow students</p>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 card-shadow border border-blue-100 dark:border-slate-700">
+        <h1 className="text-2xl font-black text-uoft-blue dark:text-white mb-1">Share Your Experience ✍️</h1>
+        <p className="text-sm text-gray-600 dark:text-slate-300 mb-6">
+          Help your fellow students by rating this facility. Your review makes a difference!
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Facility selection */}

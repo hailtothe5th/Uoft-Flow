@@ -4,8 +4,12 @@ import { User } from '../types';
 
 interface AuthContextType {
   user: User | null;
-  signIn: (email: string, displayName: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName: string) => Promise<void>;
   signOut: () => Promise<void>;
+  changePassword: (newPassword: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updatePassword: (newPassword: string) => Promise<void>;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -13,7 +17,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   signIn: async () => {},
+  signUp: async () => {},
   signOut: async () => {},
+  changePassword: async () => {},
+  resetPassword: async () => {},
+  updatePassword: async () => {},
   isAuthenticated: false,
   isLoading: true,
 });
@@ -67,64 +75,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
   };
 
-  const signIn = async (email: string, displayName: string) => {
-    // Try Supabase auth first
-    try {
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          data: { display_name: displayName },
-        },
+  const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (data.user) {
+      await loadUserProfile(data.user.id, data.user.email || email);
+    }
+  };
+
+  const signUp = async (email: string, password: string, displayName: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { display_name: displayName },
+      },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    // Create profile if user was created
+    if (data.user) {
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
+        email: data.user.email,
+        display_name: displayName,
       });
-
-      if (error) {
-        // Fallback to local auth if Supabase fails
-        console.warn('Supabase auth failed, using local auth:', error.message);
-        const newUser: User = {
-          id: `user_${Date.now()}`,
-          email,
-          displayName,
-        };
-        setUser(newUser);
-        localStorage.setItem('uoftflow_user', JSON.stringify(newUser));
-        return;
-      }
-
-      // If magic link sent, create user locally for immediate use
-      const supabaseUser = data?.user as { id: string; email?: string } | null;
-      if (supabaseUser) {
-        // Upsert profile
-        await supabase.from('profiles').upsert({
-          id: supabaseUser.id,
-          email: supabaseUser.email,
-          display_name: displayName,
-        });
-        const appUser: User = {
-          id: supabaseUser.id,
-          email: supabaseUser.email || email,
-          displayName,
-        };
-        setUser(appUser);
-        localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
-      } else {
-        // Magic link sent - create local user for immediate use
-        const newUser: User = {
-          id: `user_${Date.now()}`,
-          email,
-          displayName,
-        };
-        setUser(newUser);
-        localStorage.setItem('uoftflow_user', JSON.stringify(newUser));
-      }
-    } catch {
-      // Fallback to local auth
-      const newUser: User = {
-        id: `user_${Date.now()}`,
-        email,
-        displayName,
-      };
-      setUser(newUser);
-      localStorage.setItem('uoftflow_user', JSON.stringify(newUser));
     }
   };
 
@@ -134,8 +119,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('uoftflow_user');
   };
 
+  const changePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/update-password`,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signIn, signOut, isAuthenticated: !!user, isLoading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        signIn,
+        signUp,
+        signOut,
+        changePassword,
+        resetPassword,
+        updatePassword,
+        isAuthenticated: !!user,
+        isLoading,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

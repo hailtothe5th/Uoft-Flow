@@ -13,9 +13,9 @@ export default function Terms() {
         Back to Home
       </Link>
 
-      <div className="bg-white rounded-2xl p-6 sm:p-8 card-shadow border border-blue-100">
-        <h1 className="text-2xl sm:text-3xl font-black text-uoft-blue mb-2">Terms of Service</h1>
-        <p className="text-sm text-gray-500 mb-6">Last updated: September 12, 2026</p>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 sm:p-8 card-shadow border border-blue-100 dark:border-slate-700">
+        <h1 className="text-2xl sm:text-3xl font-black text-uoft-blue dark:text-white mb-2">Terms of Service</h1>
+        <p className="text-sm text-gray-500 dark:text-slate-400 mb-6">Last updated: September 12, 2026</p>
 
         <div className="prose prose-sm max-w-none text-gray-700 space-y-6">
           <p>

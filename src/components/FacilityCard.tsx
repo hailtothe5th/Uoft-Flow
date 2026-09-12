@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { FacilityWithStats } from '../types';
 import RatingDisplay from './RatingDisplay';
@@ -9,7 +9,7 @@ interface FacilityCardProps {
   facility: FacilityWithStats;
 }
 
-export default function FacilityCard({ facility }: FacilityCardProps) {
+export default memo(function FacilityCard({ facility }: FacilityCardProps) {
   const cleanlinessColor =
     facility.avgCleanliness >= 4
       ? 'bg-clean-green'
@@ -24,41 +24,41 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
   return (
     <Link
       to={`/facility/${facility.id}`}
-      className="block bg-white rounded-2xl p-4 card-shadow card-shadow-hover transition-all duration-200 border border-blue-100/50"
+      className="block bg-white dark:bg-slate-800 rounded-2xl p-4 card-shadow card-shadow-hover transition-all duration-200 border border-blue-100/50 dark:border-slate-700"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <span className="text-2xl">{facility.type === 'toilet' ? '🚻' : '🚰'}</span>
-            <h3 className="font-bold text-uoft-blue text-sm sm:text-base truncate">
+            <h3 className="font-bold text-uoft-blue dark:text-white text-sm sm:text-base truncate">
               {facility.name}
             </h3>
           </div>
-          <p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+          <p className="text-xs text-gray-500 dark:text-slate-400 mb-2 flex items-center gap-1">
             <MapPin className="w-3 h-3" />
             {facility.building} • {facility.floorNote}
           </p>
 
           <div className="flex flex-wrap items-center gap-2 mb-2">
             {facility.genderDesignation && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-uoft-blue">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-900/30 text-uoft-blue dark:text-blue-300">
                 {facility.genderDesignation}
               </span>
             )}
             {facility.accessible && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300">
                 <Accessibility className="w-3 h-3" />
                 Accessible
               </span>
             )}
             {facility.type === 'fountain' && facility.hasBottleFiller && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300">
                 <Droplets className="w-3 h-3" />
                 Bottle filler
               </span>
             )}
             {facility.type === 'fountain' && facility.hasChilled && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-50 text-sky-700">
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300">
                 <Thermometer className="w-3 h-3" />
                 Chilled
               </span>
@@ -67,14 +67,14 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
 
           {/* Cleanliness bar */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 font-medium w-16">Clean</span>
+            <span className="text-xs text-gray-500 dark:text-slate-400 font-medium w-16">Clean</span>
             <div className="cleanliness-bar flex-1">
               <div
                 className={`cleanliness-fill ${cleanlinessColor}`}
                 style={{ width: `${cleanlinessWidth}%` }}
               />
             </div>
-            <span className="text-xs font-bold text-gray-600 w-8">
+            <span className="text-xs font-bold text-gray-600 dark:text-slate-300 w-8">
               {facility.avgCleanliness > 0 ? facility.avgCleanliness.toFixed(1) : '—'}
             </span>
           </div>
@@ -87,15 +87,15 @@ export default function FacilityCard({ facility }: FacilityCardProps) {
           )}
           {facility.distance !== undefined && (
             <div className="text-right">
-              <p className="text-sm font-bold text-uoft-blue">{formatDistance(facility.distance)}</p>
-              <p className="text-xs text-gray-400">{estimateWalkingTime(facility.distance)}</p>
+              <p className="text-sm font-bold text-uoft-blue dark:text-white">{formatDistance(facility.distance)}</p>
+              <p className="text-xs text-gray-400 dark:text-slate-500">{estimateWalkingTime(facility.distance)}</p>
             </div>
           )}
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-gray-400 dark:text-slate-500 mt-1">
             {facility.reviewCount} review{facility.reviewCount !== 1 ? 's' : ''}
           </p>
         </div>
       </div>
     </Link>
   );
-}
+});

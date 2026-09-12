@@ -30,7 +30,7 @@ export default function AddLocation() {
         <p className="text-xl font-bold text-uoft-blue mb-2">Sign in required</p>
         <p className="text-gray-500 mb-4">You need to sign in to add a new location</p>
         <Link
-          to="/auth"
+          to="/login"
           className="inline-flex items-center gap-2 px-6 py-3 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold hover:bg-amber-light transition-colors"
         >
           Sign In
@@ -115,10 +115,10 @@ export default function AddLocation() {
         Back
       </button>
 
-      <div className="bg-white rounded-2xl p-6 card-shadow border border-blue-100">
-        <h1 className="text-2xl font-black text-uoft-blue mb-1">Add a New Location</h1>
-        <p className="text-sm text-gray-500 mb-6">
-          Know a facility we're missing? Add it to the map!
+      <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 card-shadow border border-blue-100 dark:border-slate-700">
+        <h1 className="text-2xl font-black text-uoft-blue dark:text-white mb-1">Add a New Location 📍</h1>
+        <p className="text-sm text-gray-600 dark:text-slate-300 mb-6">
+          Found a facility we don't have yet? Add it to help other students!
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
