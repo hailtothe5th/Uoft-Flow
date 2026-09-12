@@ -18,6 +18,7 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const UpdatePassword = lazy(() => import('./pages/UpdatePassword'));
 const ChangePassword = lazy(() => import('./pages/ChangePassword'));
 const Terms = lazy(() => import('./pages/Terms'));
+const DebugDatabase = lazy(() => import('./pages/DebugDatabase'));
 
 // Loading fallback component
 function PageLoader() {
@@ -62,6 +63,7 @@ function App() {
                   <Route path="/update-password" element={<UpdatePassword />} />
                   <Route path="/change-password" element={<ChangePassword />} />
                   <Route path="/terms" element={<Terms />} />
+                  <Route path="/debug" element={<DebugDatabase />} />
                 </Routes>
               </Suspense>              </main>
               <Footer />
