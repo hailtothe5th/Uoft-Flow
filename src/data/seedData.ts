@@ -297,4 +297,49 @@ export const seedReviews: Review[] = [
   // Koffler
   { id: 'r19', facilityId: 'koffler-m', userId: 'seed5', userName: 'CS_student', overallRating: 3, cleanlinessRating: 3, condition: 'Needs attention', comment: 'Gets messy during lunch rush. Try before noon.', createdAt: '2026-03-07T12:30:00Z' },
   { id: 'r20', facilityId: 'koffler-fountain', userId: 'seed2', userName: 'CampusWalker', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Reliable fountain, always works.', createdAt: '2026-03-03T15:00:00Z' },
+  
+  // Additional reviews for more realistic data
+  // Robarts additional
+  { id: 'r21', facilityId: 'robarts-m-1', userId: 'seed6', userName: 'BookWorm99', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Always my go-to washroom when studying at Robarts. Impeccably clean!', createdAt: '2026-03-12T10:15:00Z' },
+  { id: 'r22', facilityId: 'robarts-m-1', userId: 'seed7', userName: 'EngineeringKid', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Very convenient location. Clean most of the time.', createdAt: '2026-03-15T14:20:00Z' },
+  { id: 'r23', facilityId: 'robarts-m-5', userId: 'seed8', userName: 'LateNightStudier', overallRating: 3, cleanlinessRating: 2, condition: 'Needs attention', comment: 'Wasn\'t great at 2am. Understandable but could be better.', createdAt: '2026-03-18T02:30:00Z' },
+  { id: 'r24', facilityId: 'robarts-f-1', userId: 'seed9', userName: 'HydrationHero', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Love the bottle filler! Water is always cold and refreshing.', createdAt: '2026-03-20T11:45:00Z' },
+  
+  // Sidney Smith additional
+  { id: 'r25', facilityId: 'ss-101-m', userId: 'seed10', userName: 'PolySciMajor', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Solid washroom. Nothing fancy but does the job well.', createdAt: '2026-03-14T09:30:00Z' },
+  { id: 'r26', facilityId: 'ss-101-m', userId: 'seed11', userName: 'CampusVisitor', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Surprisingly clean! Was impressed.', createdAt: '2026-03-22T16:00:00Z' },
+  { id: 'r27', facilityId: 'ss-3089-m', userId: 'seed12', userName: 'PhilosophyPhD', overallRating: 2, cleanlinessRating: 2, condition: 'Needs attention', comment: 'Really needs more frequent cleaning. Not great.', createdAt: '2026-03-25T13:15:00Z' },
+  { id: 'r28', facilityId: 'ss-fountain', userId: 'seed13', userName: 'ThirstyStudent', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Works well, good water pressure.', createdAt: '2026-03-19T10:00:00Z' },
+  
+  // Bahen additional
+  { id: 'r29', facilityId: 'bahen-m-1', userId: 'seed14', userName: 'MathMajor', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Best washroom in Bahen hands down. Always clean!', createdAt: '2026-03-16T15:30:00Z' },
+  { id: 'r30', facilityId: 'bahen-m-1', userId: 'seed15', userName: 'StatsNerd', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Very clean and modern. Appreciate the all-gender option.', createdAt: '2026-03-21T11:20:00Z' },
+  { id: 'r31', facilityId: 'bahen-m-4', userId: 'seed16', userName: 'CodeMonkey', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Convenient for CS labs. Usually clean.', createdAt: '2026-03-24T14:45:00Z' },
+  { id: 'r32', facilityId: 'bahen-fountain', userId: 'seed17', userName: 'WaterLover', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Perfect fountain! Cold water and bottle filler works great.', createdAt: '2026-03-17T09:15:00Z' },
+  
+  // Gerstein additional
+  { id: 'r33', facilityId: 'gerstein-m', userId: 'seed18', userName: 'MedStudent', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Good washroom for science library. Clean and quiet.', createdAt: '2026-03-23T16:30:00Z' },
+  { id: 'r34', facilityId: 'gerstein-m', userId: 'seed19', userName: 'ResearchAssistant', overallRating: 3, cleanlinessRating: 3, condition: 'Good', comment: 'Decent. Could be a bit cleaner but acceptable.', createdAt: '2026-03-26T10:45:00Z' },
+  { id: 'r35', facilityId: 'gerstein-fountain', userId: 'seed20', userName: 'LabTech', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Reliable fountain in a good location.', createdAt: '2026-03-28T13:00:00Z' },
+  
+  // Myhal additional
+  { id: 'r36', facilityId: 'myhal-m', userId: 'seed21', userName: 'MechEng', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'New building means everything is pristine. Love it!', createdAt: '2026-03-27T11:30:00Z' },
+  { id: 'r37', facilityId: 'myhal-m', userId: 'seed22', userName: 'CivilEng', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Best washroom facilities on campus. Modern and spotless.', createdAt: '2026-03-29T15:15:00Z' },
+  { id: 'r38', facilityId: 'myhal-fountain', userId: 'seed23', userName: 'ElectricalEng', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Excellent bottle filler! Very convenient.', createdAt: '2026-03-30T09:45:00Z' },
+  
+  // Hart House additional
+  { id: 'r39', facilityId: 'harthouse-m', userId: 'seed24', userName: 'HistoryBuff', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Nice washroom in a beautiful historic building. Well maintained.', createdAt: '2026-03-31T14:00:00Z' },
+  { id: 'r40', facilityId: 'harthouse-m', userId: 'seed25', userName: 'ArtStudent', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Impressed with how clean it is given the age of the building.', createdAt: '2026-04-02T10:30:00Z' },
+  { id: 'r41', facilityId: 'harthouse-f', userId: 'seed26', userName: 'MusicMajor', overallRating: 3, cleanlinessRating: 3, condition: 'Good', comment: 'Works fine but nothing special. Average fountain.', createdAt: '2026-04-03T16:45:00Z' },
+  
+  // Medical Sciences additional
+  { id: 'r42', facilityId: 'medsci-m', userId: 'seed27', userName: 'NursingStudent', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Clean washroom, good location for med students.', createdAt: '2026-04-01T11:15:00Z' },
+  { id: 'r43', facilityId: 'medsci-m', userId: 'seed28', userName: 'PreMed', overallRating: 3, cleanlinessRating: 3, condition: 'Needs attention', comment: 'Gets busy and messy around lunch time. Avoid 12-1pm.', createdAt: '2026-04-04T13:30:00Z' },
+  { id: 'r44', facilityId: 'medsci-fountain', userId: 'seed29', userName: 'PharmacyStudent', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Good fountain, convenient location in the building.', createdAt: '2026-04-05T09:00:00Z' },
+  
+  // Koffler additional
+  { id: 'r45', facilityId: 'koffler-m', userId: 'seed30', userName: 'InternationalStudent', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Clean and accessible. Good location near food court.', createdAt: '2026-04-06T15:45:00Z' },
+  { id: 'r46', facilityId: 'koffler-m', userId: 'seed31', userName: 'FirstYear', overallRating: 5, cleanlinessRating: 5, condition: 'Excellent', comment: 'Very clean washroom! Always well-stocked.', createdAt: '2026-04-08T10:00:00Z' },
+  { id: 'r47', facilityId: 'koffler-fountain', userId: 'seed32', userName: 'CommuterStudent', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Reliable fountain, use it often.', createdAt: '2026-04-09T14:30:00Z' },
+  { id: 'r48', facilityId: 'koffler-fountain', userId: 'seed33', userName: 'StudentUnion', overallRating: 4, cleanlinessRating: 4, condition: 'Good', comment: 'Good fountain in a busy area. Works well.', createdAt: '2026-04-10T11:00:00Z' },
 ];
