@@ -16,10 +16,9 @@ import {
 export default function FacilityPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { facilitiesWithStats, reviews, userLocation } = useData();
+  const { facilitiesWithStats, reviews, userLocation, getVisibleReviews } = useData();
 
   const facility = facilitiesWithStats.find((f) => f.id === id);
-  const { getVisibleReviews } = useData();
   const facilityReviews = useMemo(
     () => getVisibleReviews(id || '').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
     [getVisibleReviews, id]
