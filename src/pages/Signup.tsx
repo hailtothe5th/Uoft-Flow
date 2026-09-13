@@ -40,8 +40,11 @@ export default function Signup() {
         // User is already signed in (email confirmation not required)
         navigate('/');
       } else {
-        // Email confirmation required
-        navigate('/login?message=check-email');
+        // Email confirmation required - show success message
+        setSuccessMessage('Account created! Please check your email to confirm your account, then sign in.');
+        setTimeout(() => {
+          navigate('/login');
+        }, 3000);
       }
     } catch (err: any) {
       console.error('Signup error:', err);
