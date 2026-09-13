@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
@@ -7,7 +7,7 @@ import { FilterType, SortOption, GenderDesignation } from '../types';
 import { ArrowUpDown, Filter, Search } from 'lucide-react';
 
 export default function Home() {
-  const { facilitiesWithStats, isLoading } = useData();
+  const { facilitiesWithStats, isLoading, requestLocation } = useData();
   const { isAuthenticated } = useAuth();
 
   const [filterType, setFilterType] = useState<FilterType>('all');
@@ -15,6 +15,11 @@ export default function Home() {
   const [genderFilter, setGenderFilter] = useState<GenderDesignation | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+
+  // Request location permission when page loads
+  useEffect(() => {
+    requestLocation();
+  }, [requestLocation]);
 
   const filteredAndSorted = useMemo(() => {
     let result = [...facilitiesWithStats];
