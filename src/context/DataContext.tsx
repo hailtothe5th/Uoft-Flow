@@ -3,6 +3,7 @@ import { Facility, Review, FacilityWithStats, Report } from '../types';
 import { seedFacilities, seedReviews } from '../data/seedData';
 import { supabase } from '../lib/supabase';
 import { filterReviews } from '../utils/contentFilter';
+import { calculateDistance } from '../utils/distance';
 import { useAuth } from './AuthContext';
 
 interface DataContextType {
@@ -193,6 +194,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     building: row.building,
     floorNote: row.floor_note,
     address: row.address,
+    lat: row.lat,
+    lng: row.lng,
     genderDesignation: row.gender_designation,
     accessible: row.accessible,
     hasBottleFiller: row.has_bottle_filler,
@@ -233,6 +236,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
           building: facility.building,
           floor_note: facility.floorNote,
           address: facility.address,
+          lat: facility.lat,
+          lng: facility.lng,
           gender_designation: facility.genderDesignation,
           accessible: facility.accessible,
           has_bottle_filler: facility.hasBottleFiller,
@@ -422,11 +427,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
         ? facilityReviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / facilityReviews.length
         : 0;
 
+    // Calculate distance if user location and facility coordinates are available
+    let distance: number | undefined;
+    if (userLocation && f.lat && f.lng) {
+      distance = calculateDistance(userLocation.lat, userLocation.lng, f.lat, f.lng);
+    }
+
     return {
       ...f,
       avgRating,
       avgCleanliness,
       reviewCount: facilityReviews.length,
+      distance,
     };
   });
 
