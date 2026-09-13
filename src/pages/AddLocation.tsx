@@ -81,6 +81,7 @@ export default function AddLocation() {
       building,
       floorNote,
       address,
+      campus: 'St. George',
       genderDesignation: type === 'toilet' ? genderDesignation : undefined,
       accessible,
       hasBottleFiller: type === 'fountain' ? hasBottleFiller : undefined,

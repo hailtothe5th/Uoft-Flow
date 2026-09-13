@@ -143,6 +143,7 @@ export default function Contribute() {
       building,
       floorNote,
       address,
+      campus: 'St. George',
       genderDesignation: type === 'toilet' ? genderDesignation : undefined,
       accessible,
       hasBottleFiller: type === 'fountain' ? hasBottleFiller : undefined,

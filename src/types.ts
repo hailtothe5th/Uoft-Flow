@@ -11,6 +11,7 @@ export interface Facility {
   building: string;
   floorNote: string;
   address: string;
+  campus: string;
   lat?: number;
   lng?: number;
   genderDesignation?: GenderDesignation;
