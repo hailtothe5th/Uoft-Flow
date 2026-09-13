@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { Facility, Review, FacilityWithStats, Report } from '../types';
 import { seedFacilities, seedReviews } from '../data/seedData';
 import { supabase } from '../lib/supabase';
@@ -398,22 +398,26 @@ export function DataProvider({ children }: { children: ReactNode }) {
     return visible;
   };
 
-  const requestLocation = () => {
+  const requestLocation = useCallback(() => {
+    console.log('📍 Requesting location...');
     if (!navigator.geolocation) {
+      console.error('❌ Geolocation not supported');
       setLocationError('Geolocation is not supported by your browser');
       return;
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        console.log('✅ Location received:', pos.coords);
         setUserLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
         setLocationError(null);
       },
       (err) => {
+        console.error('❌ Location error:', err);
         setLocationError(err.message || 'Unable to get location');
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
-  };
+  }, []);
 
   // Compute facilities with stats
   const facilitiesWithStats: FacilityWithStats[] = facilities.map((f) => {
@@ -431,6 +435,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
     let distance: number | undefined;
     if (userLocation && f.lat && f.lng) {
       distance = calculateDistance(userLocation.lat, userLocation.lng, f.lat, f.lng);
+      console.log(`📏 Distance to ${f.name}:`, distance, 'meters');
+    } else {
+      console.log(`❌ Cannot calculate distance for ${f.name}:`, {
+        hasUserLocation: !!userLocation,
+        hasLat: !!f.lat,
+        hasLng: !!f.lng,
+        userLocation,
+        facilityLat: f.lat,
+        facilityLng: f.lng,
+      });
     }
 
     return {
