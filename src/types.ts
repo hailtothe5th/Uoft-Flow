@@ -11,12 +11,15 @@ export interface Facility {
   building: string;
   floorNote: string;
   address: string;
+  campus: string;
   lat?: number;
   lng?: number;
   genderDesignation?: GenderDesignation;
   accessible: boolean;
   hasBottleFiller?: boolean;
   hasChilled?: boolean;
+  hasFreeMenstrualProducts?: boolean;
+  hasBabyChangeStation?: boolean;
   createdAt: string;
   createdBy: string;
 }

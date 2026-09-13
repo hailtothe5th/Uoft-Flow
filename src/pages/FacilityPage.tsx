@@ -109,6 +109,11 @@ export default function FacilityPage() {
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mt-3">
+              {facility.campus && (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                  🎓 {facility.campus}
+                </span>
+              )}
               {facility.genderDesignation && (
                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-uoft-blue dark:text-blue-300">
                   {facility.genderDesignation}
@@ -130,6 +135,16 @@ export default function FacilityPage() {
                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-sky-50 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300">
                   <Thermometer className="w-3 h-3" />
                   Chilled
+                </span>
+              )}
+              {facility.type === 'toilet' && facility.hasFreeMenstrualProducts && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300">
+                  🩸 Free menstrual products
+                </span>
+              )}
+              {facility.type === 'toilet' && facility.hasBabyChangeStation && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
+                  👶 Baby change station
                 </span>
               )}
             </div>
