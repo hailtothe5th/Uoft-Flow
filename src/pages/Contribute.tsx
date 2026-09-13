@@ -35,8 +35,12 @@ export default function Contribute() {
   const [type, setType] = useState<FacilityType>('toilet');
   const [name, setName] = useState('');
   const [building, setBuilding] = useState('');
-  const [floorNote, setFloorNote] = useState('');
   const [address, setAddress] = useState('');
+  const [buildingCode, setBuildingCode] = useState('');
+  const [floor, setFloor] = useState('');
+  const [room, setRoom] = useState('');
+  const [floorNote, setFloorNote] = useState('');
+  const [notes, setNotes] = useState('');
   const [genderDesignation, setGenderDesignation] = useState<GenderDesignation>('All-gender');
   const [accessible, setAccessible] = useState(false);
   const [hasBottleFiller, setHasBottleFiller] = useState(false);
@@ -136,15 +140,19 @@ export default function Contribute() {
 
   const handleFacilitySubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !building || !floorNote || !address) return;
+    if (!name || !building || !address) return;
 
     const facility: Facility = {
       id: uuidv4(),
       type,
       name,
       building,
-      floorNote,
+      buildingCode: buildingCode || undefined,
+      floor: floor || undefined,
+      room: room || undefined,
+      floorNote: floorNote || [floor ? `Floor ${floor}` : '', room ? `Room ${room}` : ''].filter(Boolean).join(', '),
       address,
+      notes: notes || undefined,
       campus: 'St. George',
       genderDesignation: type === 'toilet' ? genderDesignation : undefined,
       accessible,
@@ -284,18 +292,59 @@ export default function Contribute() {
               />
             </div>
 
+            {/* Building Code */}
+            <div>
+              <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-1">
+                Building Code <span className="text-gray-400 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={buildingCode}
+                onChange={(e) => setBuildingCode(e.target.value)}
+                placeholder="e.g., RL"
+                className="w-full px-4 py-3 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+              />
+            </div>
+
+            {/* Floor */}
+            <div>
+              <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-1">
+                Floor <span className="text-gray-400 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={floor}
+                onChange={(e) => setFloor(e.target.value)}
+                placeholder="e.g., 3"
+                className="w-full px-4 py-3 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+              />
+            </div>
+
+            {/* Room */}
+            <div>
+              <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-1">
+                Room <span className="text-gray-400 font-normal">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={room}
+                onChange={(e) => setRoom(e.target.value)}
+                placeholder="e.g., 3005"
+                className="w-full px-4 py-3 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+              />
+            </div>
+
             {/* Floor note */}
             <div>
               <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-1">
-                Floor & Location <span className="text-bad-red">*</span>
+                Floor & Location <span className="text-gray-400 font-normal">(optional)</span>
               </label>
               <input
                 type="text"
                 value={floorNote}
                 onChange={(e) => setFloorNote(e.target.value)}
-                placeholder="e.g., 3rd Floor, near east staircase"
+                placeholder="e.g., near east staircase"
                 className="w-full px-4 py-3 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
-                required
               />
             </div>
 
@@ -315,6 +364,20 @@ export default function Contribute() {
                   required
                 />
               </div>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block text-sm font-bold text-uoft-blue dark:text-white mb-1">
+                Notes <span className="text-gray-400 font-normal">(optional)</span>
+              </label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Any additional information about this facility..."
+                rows={3}
+                className="w-full px-4 py-3 rounded-xl border border-blue-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent resize-none"
+              />
             </div>
 
             {/* Gender designation (for toilets) */}

@@ -64,7 +64,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       
       // Test Supabase connection first
       const { data: testData, error: testError } = await supabase
-        .from('facilities')
+        .from('washrooms')
         .select('id')
         .limit(1);
       
@@ -75,18 +75,31 @@ export function DataProvider({ children }: { children: ReactNode }) {
       
       console.log('✅ Supabase connection successful');
       
-      // Load facilities from Supabase
-      const { data: supabaseFacilities, error: facilitiesError } = await supabase
-        .from('facilities')
+      // Load washrooms from Supabase
+      const { data: supabaseWashrooms, error: washroomsError } = await supabase
+        .from('washrooms')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (facilitiesError) {
-        console.error('❌ Failed to load facilities from Supabase:', facilitiesError.message);
-        throw facilitiesError;
+      if (washroomsError) {
+        console.error('❌ Failed to load washrooms from Supabase:', washroomsError.message);
+        throw washroomsError;
       }
 
-      console.log(`✅ Loaded ${supabaseFacilities?.length || 0} facilities from Supabase`);
+      console.log(`✅ Loaded ${supabaseWashrooms?.length || 0} washrooms from Supabase`);
+
+      // Load fountains from Supabase
+      const { data: supabaseFountains, error: fountainsError } = await supabase
+        .from('fountains')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (fountainsError) {
+        console.error('❌ Failed to load fountains from Supabase:', fountainsError.message);
+        throw fountainsError;
+      }
+
+      console.log(`✅ Loaded ${supabaseFountains?.length || 0} fountains from Supabase`);
 
       // Load reviews from Supabase
       const { data: supabaseReviews, error: reviewsError } = await supabase
@@ -101,11 +114,23 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
       console.log(`✅ Loaded ${supabaseReviews?.length || 0} reviews from Supabase`);
 
-      // Set data from Supabase ONLY if we got data
-      if (supabaseFacilities && supabaseFacilities.length > 0) {
-        setFacilities(supabaseFacilities.map(mapSupabaseFacility));
+      // Combine washrooms and fountains into facilities
+      const allFacilities: Facility[] = [];
+      
+      if (supabaseWashrooms && supabaseWashrooms.length > 0) {
+        allFacilities.push(...supabaseWashrooms.map(mapSupabaseWashroom));
+        console.log('✅ Mapped washrooms');
+      }
+      
+      if (supabaseFountains && supabaseFountains.length > 0) {
+        allFacilities.push(...supabaseFountains.map(mapSupabaseFountain));
+        console.log('✅ Mapped fountains');
+      }
+      
+      if (allFacilities.length > 0) {
+        setFacilities(allFacilities);
         supabaseLoaded = true;
-        console.log('✅ Set facilities from Supabase');
+        console.log(`✅ Set ${allFacilities.length} total facilities from Supabase`);
       }
 
       if (supabaseReviews && supabaseReviews.length > 0) {
@@ -167,9 +192,31 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   };
 
-  const mapSupabaseFacility = (row: any): Facility => ({
+  const mapSupabaseWashroom = (row: any): Facility => ({
     id: row.id,
-    type: row.type,
+    type: 'toilet' as const,
+    name: `${row.building} ${row.floor ? `Floor ${row.floor}` : ''} ${row.room ? `Room ${row.room}` : ''}`.trim(),
+    building: row.building,
+    buildingCode: row.building_code,
+    floorNote: [row.floor ? `Floor ${row.floor}` : '', row.room ? `Room ${row.room}` : ''].filter(Boolean).join(', '),
+    floor: row.floor,
+    room: row.room,
+    address: row.address || '',
+    campus: row.campus || 'St. George',
+    lat: row.lat,
+    lng: row.lng,
+    genderDesignation: row.gender_designation,
+    accessible: row.accessible,
+    hasFreeMenstrualProducts: row.free_menstrual_products,
+    hasBabyChangeStation: row.baby_change_station,
+    notes: row.notes,
+    createdAt: row.created_at,
+    createdBy: row.created_by,
+  });
+
+  const mapSupabaseFountain = (row: any): Facility => ({
+    id: row.id,
+    type: 'fountain' as const,
     name: row.name,
     building: row.building,
     floorNote: row.floor_note,
@@ -177,12 +224,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
     campus: row.campus || 'St. George',
     lat: row.lat,
     lng: row.lng,
-    genderDesignation: row.gender_designation,
-    accessible: row.accessible,
+    accessible: false,
     hasBottleFiller: row.has_bottle_filler,
     hasChilled: row.has_chilled,
-    hasFreeMenstrualProducts: row.has_free_menstrual_products,
-    hasBabyChangeStation: row.has_baby_change_station,
     createdAt: row.created_at,
     createdBy: row.created_by,
   });
@@ -211,31 +255,57 @@ export function DataProvider({ children }: { children: ReactNode }) {
     // Try to save to Supabase if connected
     if (supabaseConnected) {
       try {
-        console.log('💾 Saving facility to Supabase...');
-        const { error } = await supabase.from('facilities').insert({
-          id: facility.id,
-          type: facility.type,
-          name: facility.name,
-          building: facility.building,
-          floor_note: facility.floorNote,
-          address: facility.address,
-          campus: facility.campus,
-          lat: facility.lat,
-          lng: facility.lng,
-          gender_designation: facility.genderDesignation,
-          accessible: facility.accessible,
-          has_bottle_filler: facility.hasBottleFiller,
-          has_chilled: facility.hasChilled,
-          has_free_menstrual_products: facility.hasFreeMenstrualProducts,
-          has_baby_change_station: facility.hasBabyChangeStation,
-          created_at: facility.createdAt,
-          created_by: facility.createdBy,
-        });
+        console.log(`💾 Saving ${facility.type} to Supabase...`);
         
-        if (error) {
-          console.error('❌ Failed to save facility to Supabase:', error.message);
-        } else {
-          console.log('✅ Facility saved to Supabase successfully');
+        if (facility.type === 'toilet') {
+          // Save to washrooms table
+          const { error } = await supabase.from('washrooms').insert({
+            id: facility.id,
+            campus: facility.campus,
+            building: facility.building,
+            building_code: facility.buildingCode,
+            floor: facility.floor,
+            room: facility.room,
+            address: facility.address,
+            lat: facility.lat,
+            lng: facility.lng,
+            gender_designation: facility.genderDesignation,
+            accessible: facility.accessible,
+            baby_change_station: facility.hasBabyChangeStation,
+            free_menstrual_products: facility.hasFreeMenstrualProducts,
+            notes: facility.notes,
+            created_at: facility.createdAt,
+            created_by: facility.createdBy,
+          });
+          
+          if (error) {
+            console.error('❌ Failed to save washroom to Supabase:', error.message);
+          } else {
+            console.log('✅ Washroom saved to Supabase successfully');
+          }
+        } else if (facility.type === 'fountain') {
+          // Save to fountains table
+          const { error } = await supabase.from('fountains').insert({
+            id: facility.id,
+            type: facility.type,
+            name: facility.name,
+            building: facility.building,
+            floor_note: facility.floorNote,
+            address: facility.address,
+            campus: facility.campus,
+            lat: facility.lat,
+            lng: facility.lng,
+            has_bottle_filler: facility.hasBottleFiller,
+            has_chilled: facility.hasChilled,
+            created_at: facility.createdAt,
+            created_by: facility.createdBy,
+          });
+          
+          if (error) {
+            console.error('❌ Failed to save fountain to Supabase:', error.message);
+          } else {
+            console.log('✅ Fountain saved to Supabase successfully');
+          }
         }
       } catch (error) {
         console.error('❌ Error saving facility to Supabase:', error);

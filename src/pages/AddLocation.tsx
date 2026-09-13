@@ -14,8 +14,12 @@ export default function AddLocation() {
   const [type, setType] = useState<FacilityType>('toilet');
   const [name, setName] = useState('');
   const [building, setBuilding] = useState('');
+  const [buildingCode, setBuildingCode] = useState('');
+  const [floor, setFloor] = useState('');
+  const [room, setRoom] = useState('');
   const [floorNote, setFloorNote] = useState('');
   const [address, setAddress] = useState('');
+  const [notes, setNotes] = useState('');
   const [genderDesignation, setGenderDesignation] = useState<GenderDesignation>('All-gender');
   const [accessible, setAccessible] = useState(false);
   const [hasBottleFiller, setHasBottleFiller] = useState(false);
@@ -74,15 +78,19 @@ export default function AddLocation() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !building || !floorNote || !address) return;
+    if (!name || !building || !address) return;
 
     const facility: Facility = {
       id: uuidv4(),
       type,
       name,
       building,
-      floorNote,
+      buildingCode: buildingCode || undefined,
+      floor: floor || undefined,
+      room: room || undefined,
+      floorNote: floorNote || [floor ? `Floor ${floor}` : '', room ? `Room ${room}` : ''].filter(Boolean).join(', '),
       address,
+      notes: notes || undefined,
       campus: 'St. George',
       genderDesignation: type === 'toilet' ? genderDesignation : undefined,
       accessible,
@@ -176,18 +184,59 @@ export default function AddLocation() {
             />
           </div>
 
+          {/* Building Code */}
+          <div>
+            <label className="block text-sm font-bold text-uoft-blue mb-1">
+              Building Code <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={buildingCode}
+              onChange={(e) => setBuildingCode(e.target.value)}
+              placeholder="e.g., RL"
+              className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+            />
+          </div>
+
+          {/* Floor */}
+          <div>
+            <label className="block text-sm font-bold text-uoft-blue mb-1">
+              Floor <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={floor}
+              onChange={(e) => setFloor(e.target.value)}
+              placeholder="e.g., 3"
+              className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+            />
+          </div>
+
+          {/* Room */}
+          <div>
+            <label className="block text-sm font-bold text-uoft-blue mb-1">
+              Room <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <input
+              type="text"
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              placeholder="e.g., 3005"
+              className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
+            />
+          </div>
+
           {/* Floor note */}
           <div>
             <label className="block text-sm font-bold text-uoft-blue mb-1">
-              Floor & Location <span className="text-bad-red">*</span>
+              Floor & Location <span className="text-gray-400 font-normal">(optional)</span>
             </label>
             <input
               type="text"
               value={floorNote}
               onChange={(e) => setFloorNote(e.target.value)}
-              placeholder="e.g., 3rd Floor, near east staircase"
+              placeholder="e.g., near east staircase"
               className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent"
-              required
             />
           </div>
 
@@ -292,10 +341,24 @@ export default function AddLocation() {
             </div>
           </div>
 
+          {/* Notes */}
+          <div>
+            <label className="block text-sm font-bold text-uoft-blue mb-1">
+              Notes <span className="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <textarea
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Any additional information about this facility..."
+              rows={3}
+              className="w-full px-4 py-3 rounded-xl border border-blue-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-accent/50 focus:border-amber-accent resize-none"
+            />
+          </div>
+
           {/* Submit */}
           <button
             type="submit"
-            disabled={!name || !building || !floorNote || !address}
+            disabled={!name || !building || !address}
             className="w-full py-3 bg-amber-accent text-uoft-blue-dark rounded-xl font-bold text-lg hover:bg-amber-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             <Check className="w-5 h-5" />

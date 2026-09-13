@@ -9,7 +9,10 @@ export interface Facility {
   type: FacilityType;
   name: string;
   building: string;
+  buildingCode?: string;
   floorNote: string;
+  floor?: string;
+  room?: string;
   address: string;
   campus: string;
   lat?: number;
@@ -20,6 +23,7 @@ export interface Facility {
   hasChilled?: boolean;
   hasFreeMenstrualProducts?: boolean;
   hasBabyChangeStation?: boolean;
+  notes?: string;
   createdAt: string;
   createdBy: string;
 }
