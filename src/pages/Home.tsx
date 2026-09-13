@@ -15,6 +15,12 @@ export default function Home() {
   const [genderFilter, setGenderFilter] = useState<GenderDesignation | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  
+  // New amenity and accessibility filters
+  const [hasFreeMenstrualProducts, setHasFreeMenstrualProducts] = useState(false);
+  const [hasBabyChangeStation, setHasBabyChangeStation] = useState(false);
+  const [campusFilter, setCampusFilter] = useState<string>('');
+  const [isAccessible, setIsAccessible] = useState(false);
 
   // Request location permission when page loads
   useEffect(() => {
@@ -33,6 +39,26 @@ export default function Home() {
     // Filter by gender (only for toilets)
     if (genderFilter) {
       result = result.filter((f) => f.genderDesignation === genderFilter);
+    }
+
+    // Filter by campus
+    if (campusFilter) {
+      result = result.filter((f) => f.campus === campusFilter);
+    }
+
+    // Filter by accessibility
+    if (isAccessible) {
+      result = result.filter((f) => f.accessible === true);
+    }
+
+    // Filter by free menstrual products (only for toilets)
+    if (hasFreeMenstrualProducts) {
+      result = result.filter((f) => f.hasFreeMenstrualProducts === true);
+    }
+
+    // Filter by baby change station (only for toilets)
+    if (hasBabyChangeStation) {
+      result = result.filter((f) => f.hasBabyChangeStation === true);
     }
 
     // Search
@@ -62,7 +88,7 @@ export default function Home() {
     }
 
     return result;
-  }, [facilitiesWithStats, filterType, sortBy, genderFilter, searchQuery]);
+  }, [facilitiesWithStats, filterType, sortBy, genderFilter, searchQuery, campusFilter, isAccessible, hasFreeMenstrualProducts, hasBabyChangeStation]);
 
   const topFacility = filteredAndSorted[0];
 
@@ -160,6 +186,98 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* Campus filter */}
+            <div>
+              <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
+                Campus
+              </label>
+              <div className="flex gap-2 mt-1 flex-wrap">
+                {[
+                  { value: '', label: 'All Campuses' },
+                  { value: 'St. George', label: 'St. George' },
+                  { value: 'Scarborough', label: 'Scarborough' },
+                  { value: 'Mississauga', label: 'Mississauga' },
+                ].map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setCampusFilter(opt.value)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+                      campusFilter === opt.value
+                        ? 'bg-uoft-blue dark:bg-slate-700 text-white'
+                        : 'bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Accessibility filter */}
+            <div>
+              <label className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wide">
+                Accessibility & Amenities
+              </label>
+              <div className="flex flex-wrap gap-3 mt-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isAccessible}
+                    onChange={(e) => setIsAccessible(e.target.checked)}
+                    className="w-4 h-4 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                  />
+                  <span className="text-sm font-medium text-gray-700 dark:text-slate-300">
+                    ♿ Accessible
+                  </span>
+                </label>
+
+                {(filterType === 'all' || filterType === 'toilet') && (
+                  <>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={hasFreeMenstrualProducts}
+                        onChange={(e) => setHasFreeMenstrualProducts(e.target.checked)}
+                        className="w-4 h-4 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                      />
+                      <span className="text-sm font-medium text-gray-700 dark:text-slate-300">
+                        🩸 Free menstrual products
+                      </span>
+                    </label>
+
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={hasBabyChangeStation}
+                        onChange={(e) => setHasBabyChangeStation(e.target.checked)}
+                        className="w-4 h-4 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                      />
+                      <span className="text-sm font-medium text-gray-700 dark:text-slate-300">
+                        👶 Baby change station
+                      </span>
+                    </label>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* Clear filters button */}
+            {(filterType !== 'all' || genderFilter || campusFilter || isAccessible || hasFreeMenstrualProducts || hasBabyChangeStation) && (
+              <button
+                onClick={() => {
+                  setFilterType('all');
+                  setGenderFilter('');
+                  setCampusFilter('');
+                  setIsAccessible(false);
+                  setHasFreeMenstrualProducts(false);
+                  setHasBabyChangeStation(false);
+                }}
+                className="w-full py-2 px-4 rounded-lg text-sm font-semibold bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-600 transition-colors"
+              >
+                Clear All Filters
+              </button>
             )}
 
             {/* Sort */}
