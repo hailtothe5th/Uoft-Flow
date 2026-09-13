@@ -103,9 +103,16 @@ export default function FacilityPage() {
             <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 flex items-center gap-1 flex-wrap">
               <MapPin className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="break-words">
-                {facility.building} • {facility.floorNote}
+                {facility.building}
+                {facility.buildingCode && ` (${facility.buildingCode})`}
+                {facility.floorNote && ` • ${facility.floorNote}`}
               </span>
             </p>
+            {facility.notes && (
+              <p className="text-xs text-gray-600 dark:text-slate-300 mt-2 italic">
+                📝 {facility.notes}
+              </p>
+            )}
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mt-3">
