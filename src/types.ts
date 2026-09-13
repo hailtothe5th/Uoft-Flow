@@ -11,6 +11,8 @@ export interface Facility {
   building: string;
   floorNote: string;
   address: string;
+  lat?: number;
+  lng?: number;
   genderDesignation?: GenderDesignation;
   accessible: boolean;
   hasBottleFiller?: boolean;
@@ -51,6 +53,7 @@ export interface FacilityWithStats extends Facility {
   avgRating: number;
   avgCleanliness: number;
   reviewCount: number;
+  distance?: number;
 }
 
 export interface User {
@@ -59,5 +62,5 @@ export interface User {
   displayName: string;
 }
 
-export type SortOption = 'cleanliness' | 'rating';
+export type SortOption = 'distance' | 'cleanliness' | 'rating';
 export type FilterType = 'all' | 'toilet' | 'fountain';

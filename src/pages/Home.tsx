@@ -42,7 +42,14 @@ export default function Home() {
     }
 
     // Sort
-    if (sortBy === 'cleanliness') {
+    if (sortBy === 'distance') {
+      result.sort((a, b) => {
+        if (a.distance === undefined && b.distance === undefined) return 0;
+        if (a.distance === undefined) return 1;
+        if (b.distance === undefined) return -1;
+        return a.distance - b.distance;
+      });
+    } else if (sortBy === 'cleanliness') {
       result.sort((a, b) => b.avgCleanliness - a.avgCleanliness);
     } else if (sortBy === 'rating') {
       result.sort((a, b) => b.avgRating - a.avgRating);
@@ -156,6 +163,7 @@ export default function Home() {
               </label>
               <div className="flex gap-2 mt-1">
                 {[
+                  { value: 'distance', label: '📍 Distance' },
                   { value: 'cleanliness', label: '✨ Cleanliness' },
                   { value: 'rating', label: '⭐ Rating' },
                 ].map((opt) => (
@@ -181,6 +189,7 @@ export default function Home() {
           <ArrowUpDown className="w-4 h-4 text-gray-400 dark:text-slate-500" />
           <div className="flex gap-1">
             {[
+              { value: 'distance', label: 'Distance' },
               { value: 'cleanliness', label: 'Cleanliness' },
               { value: 'rating', label: 'Rating' },
             ].map((opt) => (

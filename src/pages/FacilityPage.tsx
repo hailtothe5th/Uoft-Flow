@@ -3,7 +3,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import RatingDisplay from '../components/RatingDisplay';
 import ReportButton from '../components/ReportButton';
+import MapView from '../components/MapView';
 import { getTimeAgo } from '../utils/timeAgo';
+import { formatDistance, estimateWalkingTime } from '../utils/distance';
 import {
   ArrowLeft,
   MapPin,
@@ -12,6 +14,7 @@ import {
   Thermometer,
   ExternalLink,
   Clock,
+  Navigation,
 } from 'lucide-react';
 
 export default function FacilityPage() {
@@ -164,11 +167,20 @@ export default function FacilityPage() {
           </div>
           <div className="text-center p-2 sm:p-3 bg-blue-50 dark:bg-slate-700 rounded-xl">
             <p className="text-[10px] sm:text-xs text-gray-500 dark:text-slate-400 font-semibold mb-1">
-              Address
+              Distance
             </p>
-            <p className="text-xs sm:text-sm font-semibold text-uoft-blue dark:text-white break-words">
-              {facility.address}
-            </p>
+            {facility.distance !== undefined ? (
+              <>
+                <p className="text-xl sm:text-2xl font-black text-uoft-blue dark:text-white">
+                  {formatDistance(facility.distance)}
+                </p>
+                <p className="text-[10px] sm:text-xs text-gray-400 dark:text-slate-500">
+                  {estimateWalkingTime(facility.distance)}
+                </p>
+              </>
+            ) : (
+              <p className="text-base sm:text-lg text-gray-400 dark:text-slate-500">—</p>
+            )}
           </div>
         </div>
 
@@ -208,6 +220,24 @@ export default function FacilityPage() {
             Get Directions
           </a>
         </div>
+
+        {/* Map View */}
+        {facility.lat && facility.lng && (
+          <div className="mt-4">
+            <h3 className="text-sm font-bold text-uoft-blue dark:text-white mb-2 flex items-center gap-2">
+              <Navigation className="w-4 h-4" />
+              Location Map
+            </h3>
+            <MapView
+              lat={facility.lat}
+              lng={facility.lng}
+              name={facility.name}
+              building={facility.building}
+              floorNote={facility.floorNote}
+              type={facility.type}
+            />
+          </div>
+        )}
       </div>
 
       {/* Write review CTA */}
