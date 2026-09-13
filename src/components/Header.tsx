@@ -22,39 +22,47 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-uoft-blue dark:bg-slate-900 text-white sticky top-0 z-50 shadow-lg border-b border-slate-200 dark:border-slate-800">
-      <div className="max-w-4xl mx-auto px-4 py-3">
+    <header className="header-enhanced sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+            <div className="w-12 h-12 rounded-2xl overflow-hidden group-hover:scale-110 transition-transform duration-300 shadow-lg">
               <img src="/icon.svg" alt="UofT Flow" className="w-full h-full" />
             </div>
             <div>
-              <h1 className="text-xl font-black tracking-tight leading-none">UofT Flow</h1>
-              <p className="text-xs text-blue-200 dark:text-slate-400 font-medium">Campus facilities finder</p>
+              <h1 className="text-2xl font-black tracking-tight leading-none text-uoft-blue dark:text-white">
+                UofT Flow
+              </h1>
+              <p className="text-xs text-uoft-gray dark:text-slate-400 font-medium mt-0.5">
+                Campus facilities finder
+              </p>
             </div>
           </Link>
 
           {/* Navigation */}
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-3">
             <Link
               to="/"
-              className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                isActive('/') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
+              className={`nav-link flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                isActive('/') 
+                  ? 'bg-uoft-blue dark:bg-slate-800 text-white shadow-md' 
+                  : 'text-uoft-blue dark:text-slate-300 hover:bg-uoft-blue/10 dark:hover:bg-slate-800'
               }`}
             >
-              <Home className="w-4 h-4" />
+              <Home className="w-5 h-5" />
               <span className="hidden sm:inline">Find</span>
             </Link>
             
             <Link
               to="/contribute"
-              className={`flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-semibold transition-colors ${
-                isActive('/contribute') ? 'bg-uoft-blue-light dark:bg-slate-800 text-amber-accent' : 'hover:bg-uoft-blue-light/50 dark:hover:bg-slate-800'
+              className={`nav-link flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                isActive('/contribute') 
+                  ? 'bg-uoft-blue dark:bg-slate-800 text-white shadow-md' 
+                  : 'text-uoft-blue dark:text-slate-300 hover:bg-uoft-blue/10 dark:hover:bg-slate-800'
               }`}
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle className="w-5 h-5" />
               <span className="hidden sm:inline">Contribute</span>
             </Link>
 
