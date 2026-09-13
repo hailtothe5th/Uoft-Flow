@@ -18,6 +18,7 @@ export default function Home() {
 
   // Request location permission when page loads
   useEffect(() => {
+    console.log('🏠 Home page loaded, requesting location...');
     requestLocation();
   }, [requestLocation]);
 
