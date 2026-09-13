@@ -20,6 +20,7 @@ interface DataContextType {
   requestLocation: () => void;
   isLoading: boolean;
   supabaseConnected: boolean;
+  refreshData: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType>({
@@ -37,6 +38,7 @@ const DataContext = createContext<DataContextType>({
   requestLocation: () => {},
   isLoading: true,
   supabaseConnected: false,
+  refreshData: async () => {},
 });
 
 export function DataProvider({ children }: { children: ReactNode }) {
@@ -123,6 +125,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
           hasStallLock: mappedReviews[0]?.hasStallLock,
         });
         setReviews(mappedReviews);
+        // Update localStorage with fresh Supabase data
+        localStorage.setItem('uoftflow_reviews', JSON.stringify(mappedReviews));
+        console.log('✅ Updated localStorage with Supabase review data');
       }
 
       setSupabaseConnected(supabaseAvailable);
@@ -258,6 +263,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
     const updated = [...reviews, review];
     setReviews(updated);
     localStorage.setItem('uoftflow_reviews', JSON.stringify(updated));
+    console.log('✅ Review added to localStorage');
 
     // Check if user is actually authenticated
     const response = await supabase.auth.getSession();
@@ -424,6 +430,17 @@ export function DataProvider({ children }: { children: ReactNode }) {
     };
   });
 
+  const refreshData = async () => {
+    console.log('🔄 Forcing data refresh from Supabase...');
+    // Clear localStorage
+    localStorage.removeItem('uoftflow_facilities');
+    localStorage.removeItem('uoftflow_reviews');
+    localStorage.removeItem('uoftflow_reports');
+    console.log('✅ Cleared localStorage');
+    // Reload data
+    await loadData();
+  };
+
   return (
     <DataContext.Provider
       value={{
@@ -441,6 +458,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         requestLocation,
         isLoading,
         supabaseConnected,
+        refreshData,
       }}
     >
       {children}
