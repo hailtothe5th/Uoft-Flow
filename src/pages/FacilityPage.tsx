@@ -109,6 +109,11 @@ export default function FacilityPage() {
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mt-3">
+              {facility.campus && (
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                  🎓 {facility.campus}
+                </span>
+              )}
               {facility.genderDesignation && (
                 <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-900/30 text-uoft-blue dark:text-blue-300">
                   {facility.genderDesignation}
