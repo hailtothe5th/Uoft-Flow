@@ -135,6 +135,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string, displayName: string) => {
+    console.log('📝 Starting signup for:', email);
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -144,23 +146,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (error) {
+      console.error('❌ Signup error:', error);
       throw error;
     }
 
+    console.log('✅ Signup successful, checking session...');
+
     // Check if email confirmation is required
     if (data.user && !data.session) {
-      // Email confirmation required - user needs to check their email
-      throw new Error('Please check your email to confirm your account before signing in.');
+      // Email confirmation required - don't throw error, just return
+      // The Signup page will handle redirecting to check email message
+      console.log('📧 Email confirmation required for:', email);
+      return;
     }
 
     // If we have a session, user is already signed in (email confirmation not required)
     if (data.session && data.user) {
-      // Create profile
-      await supabase.from('profiles').upsert({
+      console.log('✅ Session exists, creating profile...');
+      
+      // Create profile with error handling
+      const { error: profileError } = await supabase.from('profiles').upsert({
         id: data.user.id,
         email: data.user.email,
         display_name: displayName,
       });
+      
+      if (profileError) {
+        console.error('⚠️ Profile creation error (non-critical):', profileError);
+        // Don't throw - user can still use the app
+      } else {
+        console.log('✅ Profile created successfully');
+      }
       
       // Set user in context
       const appUser: User = { 
@@ -170,6 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       };
       setUser(appUser);
       localStorage.setItem('uoftflow_user', JSON.stringify(appUser));
+      console.log('✅ User set in context:', appUser);
     }
   };
 
