@@ -69,6 +69,16 @@ export default memo(function FacilityCard({ facility }: FacilityCardProps) {
                 Chilled
               </span>
             )}
+            {facility.type === 'toilet' && facility.hasFreeMenstrualProducts && (
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300">
+                🩸 Free menstrual products
+              </span>
+            )}
+            {facility.type === 'toilet' && facility.hasBabyChangeStation && (
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
+                👶 Baby change station
+              </span>
+            )}
           </div>
 
           {/* Cleanliness bar */}

@@ -137,6 +137,16 @@ export default function FacilityPage() {
                   Chilled
                 </span>
               )}
+              {facility.type === 'toilet' && facility.hasFreeMenstrualProducts && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-pink-50 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300">
+                  🩸 Free menstrual products
+                </span>
+              )}
+              {facility.type === 'toilet' && facility.hasBabyChangeStation && (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
+                  👶 Baby change station
+                </span>
+              )}
             </div>
           </div>
         </div>

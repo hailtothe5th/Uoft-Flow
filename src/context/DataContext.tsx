@@ -181,6 +181,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
     accessible: row.accessible,
     hasBottleFiller: row.has_bottle_filler,
     hasChilled: row.has_chilled,
+    hasFreeMenstrualProducts: row.has_free_menstrual_products,
+    hasBabyChangeStation: row.has_baby_change_station,
     createdAt: row.created_at,
     createdBy: row.created_by,
   });
@@ -224,6 +226,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
           accessible: facility.accessible,
           has_bottle_filler: facility.hasBottleFiller,
           has_chilled: facility.hasChilled,
+          has_free_menstrual_products: facility.hasFreeMenstrualProducts,
+          has_baby_change_station: facility.hasBabyChangeStation,
           created_at: facility.createdAt,
           created_by: facility.createdBy,
         });

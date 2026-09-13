@@ -18,6 +18,8 @@ export interface Facility {
   accessible: boolean;
   hasBottleFiller?: boolean;
   hasChilled?: boolean;
+  hasFreeMenstrualProducts?: boolean;
+  hasBabyChangeStation?: boolean;
   createdAt: string;
   createdBy: string;
 }

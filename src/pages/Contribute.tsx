@@ -41,6 +41,8 @@ export default function Contribute() {
   const [accessible, setAccessible] = useState(false);
   const [hasBottleFiller, setHasBottleFiller] = useState(false);
   const [hasChilled, setHasChilled] = useState(false);
+  const [hasFreeMenstrualProducts, setHasFreeMenstrualProducts] = useState(false);
+  const [hasBabyChangeStation, setHasBabyChangeStation] = useState(false);
 
   const [submitted, setSubmitted] = useState(false);
   const [newlyCreatedFacilityId, setNewlyCreatedFacilityId] = useState<string | null>(null);
@@ -148,6 +150,8 @@ export default function Contribute() {
       accessible,
       hasBottleFiller: type === 'fountain' ? hasBottleFiller : undefined,
       hasChilled: type === 'fountain' ? hasChilled : undefined,
+      hasFreeMenstrualProducts: type === 'toilet' ? hasFreeMenstrualProducts : undefined,
+      hasBabyChangeStation: type === 'toilet' ? hasBabyChangeStation : undefined,
       createdAt: new Date().toISOString(),
       createdBy: user!.id,
     };
@@ -361,6 +365,34 @@ export default function Contribute() {
                   />
                   <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
                     ❄️ Chilled
+                  </span>
+                </label>
+              </div>
+            )}
+
+            {/* Toilet options */}
+            {type === 'toilet' && (
+              <div className="flex flex-wrap gap-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasFreeMenstrualProducts}
+                    onChange={(e) => setHasFreeMenstrualProducts(e.target.checked)}
+                    className="w-5 h-5 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                  />
+                  <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                    🩸 Free menstrual products
+                  </span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hasBabyChangeStation}
+                    onChange={(e) => setHasBabyChangeStation(e.target.checked)}
+                    className="w-5 h-5 rounded border-blue-200 text-uoft-blue focus:ring-amber-accent"
+                  />
+                  <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
+                    👶 Baby change station
                   </span>
                 </label>
               </div>
