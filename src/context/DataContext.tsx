@@ -57,7 +57,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const loadData = async () => {
-    let supabaseAvailable = false;
+    let supabaseLoaded = false;
     
     try {
       console.log('🔄 Attempting to load data from Supabase...');
@@ -70,7 +70,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
       
       if (testError) {
         console.error('❌ Supabase connection failed:', testError.message);
-        console.error('Error details:', testError);
         throw testError;
       }
       
@@ -102,39 +101,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
       console.log(`✅ Loaded ${supabaseReviews?.length || 0} reviews from Supabase`);
 
-      // Set data from Supabase
+      // Set data from Supabase ONLY if we got data
       if (supabaseFacilities && supabaseFacilities.length > 0) {
         setFacilities(supabaseFacilities.map(mapSupabaseFacility));
-        setSupabaseConnected(true);
-      } else {
-        // Fallback to localStorage or seed data
-        const storedFacilities = localStorage.getItem('uoftflow_facilities');
-        if (storedFacilities) {
-          setFacilities(JSON.parse(storedFacilities));
-        } else {
-          setFacilities(seedFacilities);
-          localStorage.setItem('uoftflow_facilities', JSON.stringify(seedFacilities));
-        }
+        supabaseLoaded = true;
+        console.log('✅ Set facilities from Supabase');
       }
 
       if (supabaseReviews && supabaseReviews.length > 0) {
         const mappedReviews = supabaseReviews.map(mapSupabaseReview);
-        console.log('📋 Sample review data:', mappedReviews[0]);
-        console.log('📋 Toilet amenities in first review:', {
-          hasToiletPaper: mappedReviews[0]?.hasToiletPaper,
-          hasSoap: mappedReviews[0]?.hasSoap,
-          hasStallLock: mappedReviews[0]?.hasStallLock,
-        });
         setReviews(mappedReviews);
         // Update localStorage with fresh Supabase data
         localStorage.setItem('uoftflow_reviews', JSON.stringify(mappedReviews));
-        console.log('✅ Updated localStorage with Supabase review data');
-      }
-
-      setSupabaseConnected(supabaseAvailable);
-      
-      if (supabaseAvailable) {
-        console.log('🎉 Successfully loaded all data from Supabase!');
+        console.log('✅ Set reviews from Supabase and updated localStorage');
       }
 
       // Load reports from localStorage
@@ -142,13 +121,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
       if (storedReports) {
         setReports(JSON.parse(storedReports));
       }
+
+      if (supabaseLoaded) {
+        console.log('🎉 Successfully loaded all data from Supabase!');
+        setSupabaseConnected(true);
+      }
     } catch (error) {
-      console.warn('⚠️ Supabase not available, using fallback data:', error);
-      supabaseAvailable = false;
+      console.warn('⚠️ Supabase not available, will use fallback data:', error);
+      supabaseLoaded = false;
     }
 
-    // Fallback to localStorage or seed data if Supabase is not available
-    if (!supabaseAvailable) {
+    // Fallback to localStorage or seed data ONLY if Supabase failed
+    if (!supabaseLoaded) {
       console.log('📦 Loading from localStorage or seed data...');
       
       const storedFacilities = localStorage.getItem('uoftflow_facilities');
@@ -176,12 +160,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
       if (storedReports) {
         setReports(JSON.parse(storedReports));
       }
-    }
 
-    // Load reports from localStorage
-    const storedReports = localStorage.getItem('uoftflow_reports');
-    if (storedReports) {
-      setReports(JSON.parse(storedReports));
+      setSupabaseConnected(false);
     }
 
     setIsLoading(false);
@@ -431,20 +411,11 @@ export function DataProvider({ children }: { children: ReactNode }) {
         ? facilityReviews.reduce((sum, r) => sum + r.cleanlinessRating, 0) / facilityReviews.length
         : 0;
 
-    // Calculate distance if user location and facility coordinates are available
+    // Calculate distance ONLY if user location and facility coordinates are available
+    // No logging here to avoid console spam when location is denied
     let distance: number | undefined;
     if (userLocation && f.lat && f.lng) {
       distance = calculateDistance(userLocation.lat, userLocation.lng, f.lat, f.lng);
-      console.log(`📏 Distance to ${f.name}:`, distance, 'meters');
-    } else {
-      console.log(`❌ Cannot calculate distance for ${f.name}:`, {
-        hasUserLocation: !!userLocation,
-        hasLat: !!f.lat,
-        hasLng: !!f.lng,
-        userLocation,
-        facilityLat: f.lat,
-        facilityLng: f.lng,
-      });
     }
 
     return {
